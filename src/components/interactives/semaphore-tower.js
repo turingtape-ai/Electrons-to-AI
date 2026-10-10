@@ -60,7 +60,7 @@ export class SemaphoreTower extends HTMLElement {
 
   render() {
     const W = 520;
-    const H = 330;
+    const H = 300;
     const mastX = 260;
     const beamY = 120;
     const halfBeam = 100;
@@ -116,31 +116,44 @@ export class SemaphoreTower extends HTMLElement {
         summary { cursor: pointer; color: var(--muted, #8d84ad); font-size: 13px; letter-spacing: 0.04em; user-select: none; }
         summary:hover { color: var(--text, #d9d2f0); }
         .table-wrap { overflow-x: auto; margin-top: 10px; }
-        table { border-collapse: collapse; font-size: 12.5px; min-width: 560px; }
-        th { font-weight: 500; color: var(--muted, #8d84ad); text-align: center; padding: 4px 3px; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; }
-        th[scope='row'] { text-align: left; padding-right: 8px; }
-        th .glyph { display: inline-block; width: 16px; height: 16px; vertical-align: -3px; margin-right: 4px; }
+        table { border-collapse: collapse; width: 100%; table-layout: fixed; min-width: 420px; }
+        th { font-weight: 500; color: var(--muted, #8d84ad); text-align: center; padding: 4px 2px; font-size: 9.5px; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        thead th { vertical-align: bottom; }
+        thead th .glyph { display: block; margin: 0 auto 2px; }
+        th[scope='row'] { text-align: left; padding-right: 6px; width: 84px; }
+        th[scope='row'] .glyph { display: inline-block; vertical-align: -3px; margin-right: 4px; }
+        .glyph { width: 15px; height: 15px; }
         .glyph circle { fill: var(--muted, #8d84ad); }
         .glyph line { stroke: var(--text, #d9d2f0); stroke-width: 1.8; stroke-linecap: round; }
-        thead th:first-child { text-align: left; font-size: 10px; }
+        thead th:first-child { text-align: left; font-size: 9px; letter-spacing: 0.03em; }
         td { padding: 2px; }
         .cell {
-          width: 100%; min-width: 58px; padding: 7px 4px; border-radius: 3px;
+          display: block; width: 100%; padding: 7px 0; border-radius: 3px;
           font: 500 13px/1 var(--serif, serif); color: var(--text, #d9d2f0);
           border: 1px solid var(--border, #221c40); background: var(--panel, #110d24);
+          overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        .cell.ctl { font-family: var(--sans, sans-serif); font-size: 10px; letter-spacing: 0.08em; }
+        .cell.ctl { font-family: var(--sans, sans-serif); font-size: 8.5px; letter-spacing: 0.04em; }
         .cell:hover { border-color: var(--accent, #8b5cf6); }
         .cell.current { background: var(--accent, #8b5cf6); border-color: var(--accent, #8b5cf6); color: #fff; }
         .table-note { margin-top: 8px; font-size: 12.5px; color: var(--muted, #8d84ad); }
+        @media (max-width: 520px) {
+          table { min-width: 0; }
+          th span { display: none; }
+          th[scope='row'] { width: 26px; padding-right: 2px; }
+          th[scope='row'] .glyph { margin-right: 0; }
+          thead th:first-child { font-size: 0; }
+          .cell { font-size: 12px; padding: 7px 0; }
+          .cell.ctl { font-size: 7.5px; letter-spacing: 0; }
+        }
       </style>
 
       <svg class="scene" viewBox="0 0 ${W} ${H}" role="group" aria-labelledby="st-title">
         <title id="st-title">A semaphore tower with two movable arms</title>
-        <line class="sky-line" x1="0" y1="${H - 50}" x2="${W}" y2="${H - 50}"></line>
-        <rect class="hut" x="${mastX - 44}" y="${H - 110}" width="88" height="60" rx="2"></rect>
-        <path class="roof" d="M ${mastX - 52} ${H - 110} L ${mastX} ${H - 142} L ${mastX + 52} ${H - 110} Z"></path>
-        <line class="mast" x1="${mastX}" y1="${H - 142}" x2="${mastX}" y2="${beamY}"></line>
+        <line class="sky-line" x1="0" y1="${H - 22}" x2="${W}" y2="${H - 22}"></line>
+        <rect class="hut" x="${mastX - 44}" y="${H - 82}" width="88" height="60" rx="2"></rect>
+        <path class="roof" d="M ${mastX - 52} ${H - 82} L ${mastX} ${H - 114} L ${mastX + 52} ${H - 82} Z"></path>
+        <line class="mast" x1="${mastX}" y1="${H - 114}" x2="${mastX}" y2="${beamY}"></line>
 
         <!-- faint spokes showing the seven positions each arm can take -->
         ${LEFT_ANGLES.map((a) => { const [x, y] = tip(lx, beamY, a, armLen); return `<line class="ghost" x1="${lx}" y1="${beamY}" x2="${x}" y2="${y}"></line>`; }).join('')}
@@ -156,10 +169,10 @@ export class SemaphoreTower extends HTMLElement {
         <text class="symbol" x="${W - 18}" y="74" text-anchor="end"></text>
 
         <!-- click targets -->
-        <rect class="half" data-side="left" x="0" y="0" width="${mastX}" height="${H - 50}" tabindex="0" role="button" aria-label="Turn the left arm"></rect>
-        <text class="hint" x="16" y="${H - 64}">click: turn left arm</text>
-        <rect class="half" data-side="right" x="${mastX}" y="0" width="${W - mastX}" height="${H - 50}" tabindex="0" role="button" aria-label="Turn the right arm"></rect>
-        <text class="hint" x="${W - 16}" y="${H - 64}" text-anchor="end">click: turn right arm</text>
+        <rect class="half" data-side="left" x="0" y="0" width="${mastX}" height="${H - 22}" tabindex="0" role="button" aria-label="Turn the left arm"></rect>
+        <text class="hint" x="16" y="${H - 36}">click: turn left arm</text>
+        <rect class="half" data-side="right" x="${mastX}" y="0" width="${W - mastX}" height="${H - 22}" tabindex="0" role="button" aria-label="Turn the right arm"></rect>
+        <text class="hint" x="${W - 16}" y="${H - 36}" text-anchor="end">click: turn right arm</text>
       </svg>
 
       <div class="controls">

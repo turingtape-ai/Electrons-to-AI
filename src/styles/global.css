@@ -296,23 +296,33 @@ h1, h2, h3, h4 {
   text-wrap: pretty;
 }
 
-.prose > * + * {
-  margin-top: 1.25em;
+.prose p,
+.prose ul,
+.prose ol,
+.prose blockquote,
+.prose figure,
+.prose pre {
+  margin: 1.25em 0 0;
 }
 .prose p {
-  margin: 0;
   text-wrap: pretty;
 }
 .prose h2 {
   font-size: 1.6rem;
-  margin-top: 2.6em;
-  margin-bottom: 0.1em;
+  margin: 2.4em 0 0;
   letter-spacing: -0.005em;
 }
 .prose h3 {
   font-size: 1.2rem;
   font-weight: 500;
-  margin-top: 2em;
+  margin: 2em 0 0;
+}
+.prose h2 + p,
+.prose h3 + p {
+  margin-top: 0.7em;
+}
+.prose > :first-child {
+  margin-top: 0;
 }
 .prose em {
   font-style: italic;

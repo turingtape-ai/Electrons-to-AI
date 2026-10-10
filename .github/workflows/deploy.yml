@@ -37,6 +37,14 @@ jobs:
           SITE_URL: https://${{ github.repository_owner }}.github.io
           SITE_BASE: /${{ github.event.repository.name }}
 
+      - name: Configure Pages
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: actions/configure-pages@v5
+        with:
+          # Switches the repository to "GitHub Actions" as the Pages source
+          # if it is not set yet; a no-op once it is.
+          enablement: true
+
       - name: Upload Pages artifact
         if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         uses: actions/upload-pages-artifact@v3
