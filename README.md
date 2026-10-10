@@ -109,8 +109,12 @@ Keep them small, keyboard-reachable, and respectful of
 ## Deployment
 
 Pushes to any branch run the build. Pushes to the repository's default branch
-also deploy the result to GitHub Pages. In the repository settings, Pages must
-be set to build from **GitHub Actions** (Settings → Pages → Source).
+also deploy the result to GitHub Pages.
+
+One-time setup: in the repository settings, set Pages to build from
+**GitHub Actions** (Settings → Pages → Build and deployment → Source). The
+workflow tries to do this itself, but the default workflow token is usually
+not allowed to, and the deploy job fails with "Not Found" until it is set.
 
 ## Design notes
 
