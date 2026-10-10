@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+import { getPartGroups, chapterHref } from '../lib/chapters';
+
+const groups = await getPartGroups();
+const first = groups[0]?.chapters[0];
+const written = groups.flatMap((g) => g.chapters).filter((c) => !c.data.stub).length;
+---
+
+<Base title="Signal to Thought" currentPage="home">
+  <section class="page">
+    <p class="eyebrow">A book, in chapters, on the web</p>
+    <h1 class="home-title">Signal to Thought</h1>
+    <p class="home-deck">
+      The story of computing from before electricity to language models and a little past them. Hardware and
+      software together, one small concrete step per chapter.
+    </p>
+
+    <div class="prose">
+      <p>
+        Every chapter adds exactly one idea to the ones before it. A fire on a hill carries a yes. A code turns
+        yes-and-no into letters. A switch that moves another switch becomes logic. Logic becomes arithmetic, then
+        memory, then a machine that follows instructions. From there the path runs through chips, programs, networks,
+        and graphics cards to a model that predicts the next word, and then to the question of what such a model is
+        actually doing.
+      </p>
+      <p>
+        Nothing here assumes you already know the vocabulary. Each word is built before it is used. If you can follow
+        the first chapter, you can follow the last.
+      </p>
+    </div>
+
+    {first && <a class="begin" href={chapterHref(first)}>Begin with Chapter 1 →</a>}
+
+    <ol class="parts-list">
+      {
+        groups.map((group) => {
+          const start = group.chapters[0];
+          const ready = group.chapters.filter((c) => !c.data.stub).length;
+          return (
+            <li>
+              <span class="numeral">Part {group.numeral}</span>
+              <div>
+                <h3>{start ? <a href={chapterHref(start)}>{group.title}</a> : group.title}</h3>
+                <p>{group.blurb}</p>
+                <div class="count">
+                  {group.chapters.length} chapters
+                  {ready > 0 ? ` · ${ready} written` : ' · planned'}
+                </div>
+              </div>
+            </li>
+          );
+        })
+      }
+    </ol>
+    <p class="caption" style="margin-top: 18px">{written} of {groups.flatMap((g) => g.chapters).length} chapters written so far.</p>
+  </section>
+</Base>

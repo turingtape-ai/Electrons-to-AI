@@ -1,0 +1,73 @@
+---
+import { getPartGroups, chapterHref, withBase } from '../lib/chapters';
+
+interface Props {
+  currentChapterId?: string;
+  currentPage?: string;
+}
+const { currentChapterId, currentPage } = Astro.props;
+
+const groups = await getPartGroups();
+const all = groups.flatMap((g) => g.chapters);
+const currentIndex = all.findIndex((c) => c.id === currentChapterId);
+const currentPartId = currentIndex >= 0 ? all[currentIndex].data.part : undefined;
+
+// With no chapter open (home, about), show the first Part expanded.
+const openPartId = currentPartId ?? groups[0]?.id;
+---
+
+<nav class="sidebar" id="sidebar" aria-label="Contents">
+  <a class="brand" href={withBase('/')}>Signal to Thought</a>
+  <p class="brand-sub">From beacons to language models</p>
+
+  <div class="toc">
+    {
+      groups.map((group) => {
+        const firstIdx = all.findIndex((c) => c.data.part === group.id);
+        const partDone = currentIndex >= 0 && firstIdx >= 0 && firstIdx <= currentIndex;
+        return (
+          <details
+            class:list={['toc-part', { 'is-current': group.id === currentPartId, 'is-done': partDone }]}
+            open={group.id === openPartId}
+          >
+            <summary>
+              <span class="numeral">{group.numeral}</span>
+              <span class="part-title">{group.title}</span>
+              <span class="chevron" aria-hidden="true" />
+            </summary>
+            <ol class="toc-chapters">
+              {group.chapters.map((chapter) => {
+                const idx = all.indexOf(chapter);
+                return (
+                  <li
+                    class:list={[
+                      'toc-chapter',
+                      {
+                        'is-current': chapter.id === currentChapterId,
+                        'is-done': currentIndex >= 0 && idx <= currentIndex,
+                        'is-stub': chapter.data.stub,
+                      },
+                    ]}
+                  >
+                    <a
+                      href={chapterHref(chapter)}
+                      aria-current={chapter.id === currentChapterId ? 'page' : undefined}
+                    >
+                      <span class="num">{chapter.data.order}</span>
+                      {chapter.data.title}
+                    </a>
+                  </li>
+                );
+              })}
+            </ol>
+          </details>
+        );
+      })
+    }
+  </div>
+
+  <div class="toc-foot">
+    <a href={withBase('/')} aria-current={currentPage === 'home' ? 'page' : undefined}>Start</a>
+    <a href={withBase('/about/')} aria-current={currentPage === 'about' ? 'page' : undefined}>About</a>
+  </div>
+</nav>

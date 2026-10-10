@@ -1,0 +1,91 @@
+---
+import '../styles/global.css';
+import Sidebar from '../components/Sidebar.astro';
+import { withBase } from '../lib/chapters';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** id of the chapter being read, if any; drives the sidebar state */
+  currentChapterId?: string;
+  /** which footer link to mark current ("about", "home") */
+  currentPage?: string;
+}
+
+const {
+  title,
+  description = 'The story of computing, from fires on hilltops to language models, one small step per chapter.',
+  currentChapterId,
+  currentPage,
+} = Astro.props;
+
+const siteName = 'Signal to Thought';
+const fullTitle = title === siteName ? title : `${title} · ${siteName}`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b0818" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,300;1,6..72,400&family=Instrument+Sans:wght@400;500;600&display=swap"
+    />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <a class="brand" href={withBase('/')}>{siteName}</a>
+        <button class="drawer-toggle" type="button" aria-controls="sidebar" aria-expanded="false">
+          Contents
+        </button>
+      </header>
+      <Sidebar currentChapterId={currentChapterId} currentPage={currentPage} />
+      <div class="drawer-backdrop" hidden></div>
+      <main class="main" id="main">
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      // Phone drawer: the sidebar slides down from under the top bar.
+      const toggle = document.querySelector<HTMLButtonElement>('.drawer-toggle');
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.querySelector<HTMLElement>('.drawer-backdrop');
+
+      function setOpen(open: boolean) {
+        if (!toggle || !sidebar || !backdrop) return;
+        sidebar.classList.toggle('is-open', open);
+        backdrop.classList.toggle('is-open', open);
+        backdrop.hidden = !open;
+        toggle.setAttribute('aria-expanded', String(open));
+        toggle.textContent = open ? 'Close' : 'Contents';
+      }
+
+      toggle?.addEventListener('click', () => {
+        setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+      });
+      backdrop?.addEventListener('click', () => setOpen(false));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setOpen(false);
+      });
+
+      // Keep the current chapter in view inside the sidebar on wide screens.
+      const current = sidebar?.querySelector<HTMLElement>('.toc-chapter.is-current');
+      if (current && window.matchMedia('(min-width: 901px)').matches) {
+        const rect = current.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight - 40) {
+          current.scrollIntoView({ block: 'center' });
+        }
+      }
+    </script>
+  </body>
+</html>

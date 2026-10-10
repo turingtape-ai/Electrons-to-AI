@@ -1,0 +1,51 @@
+---
+import Base from '../layouts/Base.astro';
+import { getChapters, chapterHref } from '../lib/chapters';
+
+const chapters = await getChapters();
+const first = chapters[0];
+---
+
+<Base title="About" currentPage="about">
+  <article class="page">
+    <p class="eyebrow">About this site</p>
+    <h1 class="chapter-title">Why this book exists</h1>
+    <p class="deck">
+      Most explanations of computers start in the middle. This one starts before electricity and does not skip.
+    </p>
+
+    <div class="prose">
+      <p>
+        <em>Signal to Thought</em> is a short book about how we got from signal fires to machines that write. It is
+        written for curious adults with no technical background, and for technical people who learned the pieces out
+        of order and would like to see them line up.
+      </p>
+      <p>
+        The rule for every chapter is the same: one new idea, made concrete, resting only on the chapters before it.
+        A chapter about attention in a language model should be readable by someone whose last stop was a chapter
+        about relays, provided they walked the chapters in between. Where a word like <em>bit</em>, <em>gate</em>, or
+        <em>gradient</em> appears, it has been built first.
+      </p>
+      <p>
+        Hardware and software are told together, because they were never really separate. The shape of the machine
+        decided which programs were easy to write, and the programs people wanted decided which machines got built.
+        That back-and-forth is the plot.
+      </p>
+      <h2>How to read it</h2>
+      <p>
+        In order, ideally. The sidebar lists the Parts and their chapters, and the thin line down its edge shows how
+        far you have come. Each chapter ends with a short note on what to carry forward and a card for the next one.
+        Many chapters include a small interactive in a "Try it" panel. They run in the page, need no setup, and are
+        there to be poked at.
+      </p>
+      <h2>Status</h2>
+      <p>
+        This is a work in progress. Chapters marked as not yet written have their place in the book and a short
+        description of where they are headed. The writing and the analogies are original to this project.
+      </p>
+      <p>
+        <a href={chapterHref(first)}>Start reading →</a>
+      </p>
+    </div>
+  </article>
+</Base>

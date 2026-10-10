@@ -1,0 +1,34 @@
+---
+import { chapterHref, chapterLabel, withBase, type Chapter } from '../lib/chapters';
+
+interface Props {
+  next?: Chapter;
+  prev?: Chapter;
+}
+const { next, prev } = Astro.props;
+---
+
+<nav class="chapter-nav" aria-label="Chapter navigation">
+  {
+    next ? (
+      <a class="next-card" href={chapterHref(next)}>
+        <div class="next-label">Next · {chapterLabel(next)}</div>
+        <div class="next-title">{next.data.title}</div>
+        <div class="next-deck">{next.data.deck}</div>
+      </a>
+    ) : (
+      <div class="end-note">This is the last chapter for now. The book is still being written.</div>
+    )
+  }
+  {
+    prev ? (
+      <a class="prev-link" href={chapterHref(prev)}>
+        ← Back to Chapter {prev.data.order}: {prev.data.title}
+      </a>
+    ) : (
+      <a class="prev-link" href={withBase('/')}>
+        ← Back to the start
+      </a>
+    )
+  }
+</nav>

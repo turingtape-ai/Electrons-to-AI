@@ -1,0 +1,95 @@
+---
+title: "Fires on the Hills"
+deck: "Before anyone could send a word across a country, people learned to send a single yes. Everything in this book is what happened after that."
+part: signals
+order: 1
+---
+
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
+
+## A promise made in daylight
+
+Start with two people and a valley.
+
+One lives on a hill that looks out to sea. The other lives on a hill a few kilometres inland, with the town behind. In the morning they make an agreement: if the ships come, I will light the pile of brushwood on my ridge. If you see it burning, light yours, and the town will know.
+
+Nothing about this is clever. Fire is old and hills are old. What is new is the agreement. The two of them have decided, in advance, what the fire will mean, and in doing so they have turned a fire into a message.
+
+Notice how little is sent. The fire cannot say how many ships, or whose, or whether they are friendly. It cannot say "not yet," or "I was wrong, go back to sleep." It says the one thing the two of them agreed on and nothing else. If a careless shepherd sets a hillside alight the same night, the town will arm itself for nothing. The fire has no way of adding "but this one doesn't count."
+
+That is worth sitting with, because it is the smallest message there is. Two states, lit or dark, and an agreement about which one means what. Every message in this book, every spreadsheet cell, every photograph, every sentence a language model writes, is built from exactly this: a choice between two things, with the meaning settled in advance.
+
+We will eventually call that choice a **bit**. For now, call it a yes.
+
+## The second hill
+
+Now add a third person, on a hill farther inland, who cannot see the sea at all. They do not need to. They only need to see the second hill. Their instruction is the same: if the fire to your left is lit, light your own.
+
+Add a fourth, a fifth. Each watcher knows nothing about ships. Each watcher knows exactly one thing, whether the neighbour's fire is burning, and yet the news of the ships moves inland faster than any rider, across country no rider could cross in the dark.
+
+This is a chain, and chains have a particular kind of power. No one in it understands the whole message. No one travels. Each link follows a tiny local rule, and the rule, repeated, carries the message the full distance. That is the pattern to watch for throughout this book. We will see it in telegraph relays, in the circuits of a chip, and in the layers of a network trained to predict words: small local rules, repeated, doing something no single part understands.
+
+There is a second thing happening on the chain that is easy to miss. The fire on the far hill, seen across a valley, is a faint orange smudge. The watcher who sees it does not pass along a faint smudge. They light a full fire. The signal is *remade* at every step, so it arrives at the end as strong as it left. A sentence whispered down a line of people is garbled by the tenth person. A fire passed along a chain is as clear on the last hill as on the first. Keeping a signal clean by remaking it, rather than by boosting whatever is left of it, will turn out to be one of the deepest ideas in computing. Here it is in its first form: a basket of wood and someone willing to strike a light.
+
+The chain has weaknesses too, and they are instructive. If one watcher is asleep, everything past them stays dark. If fog fills one valley, the chain is cut there. Every link adds a little delay, the time it takes to notice and to catch. Those three, the broken link, the bad weather, and the cost of relaying, will haunt every system in this story in one form or another.
+
+<TryIt title="Light the chain" note="Click the first hill, or the button. Then tick the box to see what each hill actually holds.">
+  <beacon-chain></beacon-chain>
+</TryIt>
+
+## Wanting more than yes
+
+A single fire is a single yes. People have never been satisfied with that for long.
+
+Suppose each hill has two baskets instead of one. Now the watcher can show four things: neither lit, left lit, right lit, or both. If the agreement at dawn covers all four (nothing to report; ships sighted; ships sighted and they are ours; send a doctor) the chain can carry four different messages instead of one.
+
+Three baskets give eight shapes. Four give sixteen. Each basket you add *doubles* the number of distinct things you can say, because every old shape now comes in two versions, with the new basket lit or dark. This is a quiet piece of arithmetic that nobody on the hill would bother to write down, and it is the reason a handful of yes-or-no choices can tell apart every word in a language, every colour on a screen, every person in a country. Twenty baskets would give you more than a million shapes.
+
+But baskets are expensive, fire is slow to light and slow to put out, and a watcher squinting across a valley at dusk cannot easily tell five lit baskets from six. For a very long time the practical answer to "how do I say more than yes" was: send a rider.
+
+Then, in the 1790s, in a France that was at war on most of its borders and had just overthrown its king, a man named Claude Chappe found a better answer.
+
+## Chappe's machine
+
+Chappe was a former clergyman with a taste for experiments, and he had four brothers who were willing to stand on hills for him. Beginning around 1790, in the countryside west of Paris, they tried one way after another of sending messages between two points a few kilometres apart. Clocks kept in step and paired with a sound. Panels that flipped between black and white. Each worked a little and failed in some practical way: too slow, too hard to see, too easy to misread.
+
+The design that survived was a tall mast with a long wooden beam pivoted across the top, and at each end of the beam a shorter arm, also pivoted. An operator inside the hut below moved the whole thing with ropes and pulleys, guided by a small model that mirrored the big arms overhead. The beam could be set horizontal or vertical. (Chappe also used two diagonal positions, but only while moving between shapes, so a watcher would never mistake a half-finished shape for a finished one.) Each arm could be set to seven positions, every forty-five degrees around its pivot, apart from the one where it would lie flat along the beam and disappear.
+
+Count it up: two beam positions, times seven for the left arm, times seven for the right. Ninety-eight distinct shapes, each held still long enough for someone with a telescope ten kilometres away to read it and copy it on their own tower. The telescope matters. It is the piece of the design that let the towers stand far apart, and far apart is what made the system cheap enough to build across a country.
+
+Someone proposed a name for the machine made from Greek pieces: *tele*, far, and *graphein*, to write. A far-writer. A **telegraph**. The word was coined for wooden arms on a hilltop, decades before any wire carried a message, and when wires did arrive they borrowed it.
+
+The first line ran from Paris north to Lille, near the front with the Austrian Netherlands, through about fifteen towers spaced along roughly two hundred kilometres of country. It opened in the summer of 1794. The story always told about it, because it is a good story, is that within weeks it brought the government in Paris news of a town retaken from the enemy within an hour of the event. On horseback that news was a day away.
+
+<TryIt title="Set the arms" note="Click the left or right half of the tower to turn that arm, or use the buttons. Open the table to see all forty-nine shapes and click any cell to jump to it.">
+  <semaphore-tower></semaphore-tower>
+</TryIt>
+
+## Shapes into words
+
+Ninety-eight shapes is a great deal more than one fire, but it is not a language. Chappe's trick for turning shapes into words is the part of his system that reaches furthest into the future.
+
+He did not give each shape a letter and spell things out. Spelling is slow when each letter takes half a minute to set and confirm. Instead he wrote a book. Ninety-two of the shapes were given the numbers 1 to 92; the remaining six were kept for housekeeping, signals like *start*, *error*, and *wait*. The code book had 92 pages, each page had 92 lines, and on each line sat a word or a whole useful phrase. To send a phrase, the operator at the head of the line set two shapes in a row. The first named the page, the second named the line. Two shapes, 92 × 92, gave 8,464 different things to say in the time it would have taken to spell one short word.
+
+Look at what this does. The towers are no longer sending words. They are sending a *number*, the number points at a place in a book, and the book holds the meaning. The operators on the hills in between did not have the book. They were not told what the messages meant, and the system worked better for that: they copied shapes, carefully, and nothing else. Only the people at the two ends held the book that turned numbers back into sentences.
+
+This is the first appearance of an idea that will not leave us. The thing that travels is not the meaning. The thing that travels is a pattern, with no meaning in itself, and the meaning lives in an agreement held at the ends. The hilltops do not know what they are saying. Neither will the copper wire in the next chapters, nor the transistor, nor the memory chip, and when we reach a model that writes paragraphs you will already be used to asking, carefully, where the meaning is and who holds the book.
+
+The tower above gives each shape a letter so you can spell with it. That is a teaching alphabet, invented for this page. Chappe's operators would have found it quaint, and slow.
+
+## A country of towers
+
+The Paris–Lille line worked, and France kept building. Over the next fifty years the towers spread toward Strasbourg, Lyon, Toulon, Brest and Bayonne, until there were more than five hundred stations and the lines stretched for close to five thousand kilometres. A single shape could pass from Paris to Lille in a few minutes. A full dispatch, with each shape confirmed down the line before the next was sent, might take an hour or two. Other countries copied the idea with designs of their own. For half a century this was the fastest way on Earth to move a thought.
+
+It also stopped at nightfall. It stopped in fog and heavy rain. It needed a person in every hut, awake and paying attention, and it needed the government's permission, because the state built it for itself and let nobody else use it. Those limits are not incidental. They are the shape of the next few chapters: a way to send signals that did not need daylight or a clear sky, that could run through a wire rather than across a valley, and that in time anyone could use.
+
+But the hard thinking has already been done on these hills. There are three ideas here, and you have met all of them.
+
+<CarryForward>
+  - **A distinction.** The smallest message is a choice between two states, lit or dark. We will call it a bit, and everything is made of them.
+  - **A code.** Shapes mean nothing by themselves. A shared table, agreed in advance, is what turns a pattern into a message, and the table can live at the ends while the middle only copies.
+  - **Relaying.** A signal remade at every step arrives as clean as it left. Small local rules, repeated, carry a message no single link understands.
+</CarryForward>
+
+Next, we take the alphabet of shapes and squeeze it back down to the two states we started with, lit and dark, but stretched out in time.

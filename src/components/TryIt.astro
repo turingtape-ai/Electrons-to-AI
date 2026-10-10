@@ -1,0 +1,24 @@
+---
+/**
+ * Bordered panel that frames an interactive. Use from MDX:
+ *   <TryIt title="Light the chain" note="Click the first hill.">
+ *     <beacon-chain></beacon-chain>
+ *   </TryIt>
+ */
+interface Props {
+  title?: string;
+  note?: string;
+}
+const { title, note } = Astro.props;
+---
+
+<aside class="tryit">
+  <div class="tryit-head">
+    <span class="tryit-label">Try it</span>
+    {title && <h3 class="tryit-title">{title}</h3>}
+  </div>
+  {note && <p class="tryit-note">{note}</p>}
+  <div class="tryit-body">
+    <slot />
+  </div>
+</aside>
