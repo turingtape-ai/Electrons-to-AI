@@ -3,11 +3,68 @@ title: "Codes"
 deck: "If you only have two states, you can still say anything. You just have to take turns."
 part: signals
 order: 2
-stub: true
 ---
 
-Chappe sent numbers that pointed into a book. Samuel Morse, a few decades later, sent short and long pulses that spelled words letter by letter. This chapter follows the idea of a code from one to the other and asks why a code built from only two states, stretched out in time, turned out to be the one that lasted.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-It will also look at what makes a code *good*: short signs for the commonest letters, a way to tell where one sign ends and the next begins, and a way to notice when something has gone wrong in transit.
+## The trouble with a big alphabet
 
-The interactive will be a key you tap to send letters, and a decoder that reads them back.
+Chappe's towers could show ninety-eight shapes, and that was their strength. It was also their weakness. Ninety-eight shapes need a tall mast, two heavy arms, ropes, pulleys, a trained operator, and a clear line of sight to the next mast. Every one of those costs money, and every one of them is a thing that can break.
+
+Go back to the fire for a moment. A fire has two states and costs almost nothing. The problem was never that it could not say enough. The problem was that it said its one thing all at once and then had nothing left to say. What if, instead of building a bigger fire, you used the same fire more than once?
+
+Cover it and uncover it. A short flash, a long flash, a pause. Now the fire is making shapes too, but the shapes are spread out in *time* rather than in space. The hilltop watcher needs no telescope and no second basket. They need patience and a sense of rhythm.
+
+This is the whole idea of this chapter, and it is worth saying plainly. You can trade a large alphabet of shapes for a small alphabet of states, as long as you are willing to send a sequence. Two states, taken a few at a time, can tell apart as many things as you like. Remember the doubling from the last chapter: each extra flash doubles the number of distinct messages. Five flashes, each short or long, give thirty-two patterns, which is already more than the letters of the alphabet.
+
+## A painter's code
+
+The code that made this ordinary was worked out in the 1830s and 40s by Samuel Morse, who was a painter by trade, and Alfred Vail, who was the one with the workshop. It was designed for the electric wire, which we meet in the next chapter, but it does not care what carries it. It has been sent with lamps, flags, whistles, mirrors, the tapping of a spoon on a pipe, and a finger on a wrist.
+
+In Morse's code every letter is a short string of two kinds of mark. Call them a dot and a dash. A dot is short. A dash is three times as long. Between the marks inside a letter there is a short silence, one dot long. Between letters there is a longer silence, three dots long. Between words, seven.
+
+Look at the silences for a moment, because they are easy to overlook and they are doing real work. The pattern *dot dot* is the letter I. The pattern *dot*, pause, *dot* is two letter E's. The marks are the same; only the gap differs. In this code, silence is not the absence of a symbol. It is a symbol. If you lose track of the gaps you lose the message, even if every dot and dash arrives perfectly.
+
+Here is the other thing to notice. E is a single dot. T is a single dash. Q is dash dash dot dash, and the digits are five marks each. The letters are not the same length, and the lengths are not random. The story goes that Vail went to a local printer and counted the pieces of metal type in the compositor's cases, reasoning that a printer keeps the most of whatever letter is used most. E had the biggest box, so E got the shortest code.
+
+That is a principle you will meet again and again, in forms that look nothing like this one. *Give the common things the short names.* A message built that way is shorter than one where every letter costs the same. When you reach the chapters on how a language model chops text into pieces, you will find the same instinct at work: the frequent chunks get to be single units, the rare ones are spelled out.
+
+<TryIt title="Tap a message" note="Hold the key briefly for a dot and longer for a dash. Pause to end a letter, pause longer for a space. Or type a word and watch the lamp send it.">
+  <morse-key></morse-key>
+</TryIt>
+
+## Reading by ear
+
+Morse's first machine did not expect anyone to listen. It pressed the dots and dashes into a moving strip of paper with a stylus, and a clerk would read the strip afterwards. Within a few years the clerks had stopped bothering with the paper. They found they could hear the pattern in the clicking of the machine and write the letters straight down, faster than they could read the tape. The paper was dropped and the machine was simplified into a plain clicker called a sounder.
+
+This is a small historical detail with a large lesson in it. The code was designed for a machine and then turned out to fit a person, because a person is very good at rhythm. A fluent operator does not hear dots and dashes and translate them. They hear the word, the way you hear a word rather than a sequence of letters. The code book from Chapter 1 has moved inside a head.
+
+It also meant that the thing in the middle of the line did not have to understand anything. The wire carried current or it did not. The sounder clicked or it did not. Everything that made the clicks into English happened at the end, in the operator. The pattern travelled; the meaning waited at the edges. We said this about Chappe's hilltops and we will keep saying it, because it keeps being true.
+
+## The other way to do it
+
+Morse's code is tuned for people. Its uneven letter lengths and its three sizes of silence suit a hand on a key and an ear on a sounder. They are awkward for a machine. A machine, as we will see when we build one, likes every piece to be the same size, so it knows where one ends and the next begins without having to listen for a gap.
+
+In the 1870s a French telegraph engineer, Émile Baudot, designed a code the other way around. Every letter is exactly five marks long, each mark one of two states. No gaps are needed, because after five marks the next letter simply starts. Five marks of two states give thirty-two patterns: enough for the alphabet, with a few left over for things like "space" and "switch to numbers." Baudot's code was slower for a human to tap but much easier for a machine to send and receive, and a machine that could type a received message by itself, the teleprinter, grew up around it.
+
+Two codes, then, built on the same two states, making the opposite trade. Morse spends silences and uneven lengths to keep common letters short. Baudot spends a fixed five marks on every letter to keep the machinery simple. Neither is right. They are answers to different questions, and the second question, *what is simple for a machine*, is the one that will dominate the rest of this book. Hold on to the number five, and to the idea of a fixed-width bundle of two-state marks. It will come back with a different name.
+
+<TryIt title="Five lamps" note="Each lamp is one of two states. Flip them and read the letter. Then type a word to compare how long it is in each code.">
+  <five-lamp-code></five-lamp-code>
+</TryIt>
+
+## When a dot goes wrong
+
+One more thing before we leave codes, because it is the kind of thing that only matters once something has gone wrong, and something always does.
+
+If a watcher blinks and a dash is heard as a dot, the letter changes. T becomes E. If a gap is misjudged, two letters merge or one letter splits. Nothing in the code itself says that a mistake has happened. The wrong letter is as valid as the right one. Telegraphers dealt with this the way people do: by repeating important words, by sending numbers twice, by having the receiving end read the message back. Later systems will build the checking into the code itself, adding a few extra marks whose only job is to reveal whether the others arrived intact. For now, notice the gap in the design. A code gives you a way to say anything. It does not, by itself, give you a way to know that what you said is what was heard.
+
+<CarryForward>
+  - **Time can carry shape.** A single two-state signal, used in sequence, can stand for as many things as you need. Space and time are interchangeable here.
+  - **Silence is a symbol.** The gaps in a code are part of the code. Lose them and you lose the message.
+  - **Common things get short names.** A code tuned to what is actually said is shorter than one that treats every symbol alike.
+  - **Fixed width suits machines.** Equal-length codes waste a little and simplify a lot. The number five, and the idea of a fixed bundle of two-state marks, will return.
+</CarryForward>
+
+Next we give the dot and dash something better than a lamp to ride on: a current in a wire, which does not care whether it is night.

@@ -3,11 +3,64 @@ title: "The Relay"
 deck: "A switch that is moved by electricity can move another switch. This small fact is the hinge of the whole story."
 part: signals
 order: 4
-stub: true
 ---
 
-A current that has travelled a long way through a thin wire grows too weak to click a sounder. But it can still pull a small iron lever, and that lever can close a fresh circuit with a fresh battery behind it. The beacon chain returns, in brass and iron, remaking the signal station by station.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-Then the chapter turns the idea around. If a switch can control a switch, switches can be arranged to make decisions, and Part II begins.
+## A weak click
 
-The interactive will let you build a relay from a coil, a pivoting lever and a contact, then chain several together.
+At the end of a long line the current arrives tired. It can still pull the little iron lever on the sounder, but only just, and past a certain length it cannot pull it at all. In 1835 the American physicist Joseph Henry showed a way around this that is so plain it is easy to undervalue.
+
+Do not try to make the weak current stronger. Let the weak current do the one small thing it can still do, which is to pull a light lever a short distance. Arrange the lever so that when it moves, it touches a contact. Have that contact close a *second* loop, with its own fresh battery, feeding the next stretch of line. The weak current never goes any further. It spends itself moving the lever. The next line gets a brand new current from a brand new battery, as strong as the one that left the first office.
+
+Henry's device was called a relay, after the fresh horses that waited at posting stations along a road. Chappe's hilltops were relays too, though no one called them that. The watcher who sees a faint glow lights a full fire. The lever that feels a faint current closes a full circuit. Same idea, now in iron and brass and without the watcher.
+
+## Two loops that never touch
+
+Look closely at what a relay is made of, because its parts are about to become the parts of everything.
+
+There is a coil of wire wrapped around an iron core. There is a small iron plate, the armature, held just clear of the core by a spring. And there is a pair of contacts: one fixed, one on the armature, with a gap between them.
+
+Now the important part. The coil belongs to one loop, the incoming line with its distant battery and key. The contacts belong to a *different* loop, the outgoing line with its own battery. The two loops are not joined. No electricity passes from one to the other. The only thing that crosses between them is a movement: when current flows in the coil, the core becomes a magnet, the magnet pulls the armature, the armature's contact touches the fixed one, and the second loop closes. Stop the current in the coil and the spring pulls the armature back, and the second loop opens.
+
+So the relay is a switch, exactly like the telegraph key, except that instead of a finger it is worked by a current. That sentence is the whole chapter, and most of the book, and it is worth reading twice. *A switch worked by a current.*
+
+Two consequences follow, and they point in different directions.
+
+<TryIt title="One switch moves another" note="Press the key on the left to send a current through the coil. Watch the armature, the contact, and the lamp on the right. Then try a chain, and try the other kind of contact.">
+  <relay-switch></relay-switch>
+</TryIt>
+
+## The first consequence: distance stops mattering
+
+Chain relays along a line and the signal is remade at every one. A key pressed in New York closes a relay a hundred miles west, whose contact sends a fresh current another hundred miles, and so on. The 1861 line across the United States worked this way, and so did every long line after it. The click that arrives in San Francisco is not the exhausted remains of the current that left New York. It is a new current, started a few hundred miles back by a relay that was itself started by another, all the way down the line.
+
+Each relay adds a tiny delay, the time it takes a small iron plate to move a fraction of a millimetre. Each relay is a thing that can stick or wear. But those are engineering costs, and engineering costs can be paid. The thing that could not be paid, the fading of a signal over distance, has simply gone. A signal remade along the way can travel any distance at all.
+
+Keep that in your pocket. Remaking a signal rather than amplifying it is what will let a chip pass a bit through a billion switches without it dissolving into noise. The relay is where the idea was first built.
+
+## The second consequence: a switch can be controlled
+
+Here is the other direction, and it is the one that leads to everything in Part II.
+
+A relay's input is a current. A relay's output is also a current, the one its contacts let through. So the output of one relay can be the input of another. Not just in a line, to go further, but in *arrangements*, to do things.
+
+Put two relays one after the other in the same outgoing loop, so the second loop passes through both pairs of contacts. The lamp at the end lights only if the first relay is pulled in *and* the second relay is pulled in. Put the two pairs of contacts side by side instead, as alternative paths, and the lamp lights if the first is pulled in *or* the second is. Build the contacts the other way round, so they are touching when the coil is idle and pulled apart when it is energised, and the lamp is lit when the input is *off* and dark when the input is *on*.
+
+And, or, not. Three little arrangements of a switch worked by a switch. In the next Part we will build each one carefully and show that between them they can answer any question that has a yes-or-no answer, add numbers, and remember. For now just see that the relay has done something the telegraph key never did. The key let a person control a current. The relay lets a current control a current. The person has stepped out of the loop, and the circuit can now respond to its own signals.
+
+## Where we are
+
+Four chapters in, the pieces on the table are these. A distinction between two states. A code that strings distinctions into messages. A wire that carries a distinction as a current. And a relay that lets a current throw a switch, which can remake the signal for the next stretch of wire or, pointed inward, decide something about it.
+
+Nothing yet computes. But every later machine in this book, from the room-sized relay calculators of the 1940s to the chip in your pocket, is this fourth piece repeated. A switch worked by a signal, worked by a signal, worked by a signal. The materials will change beyond recognition. The idea will not change at all.
+
+<CarryForward>
+  - **Remake, do not amplify.** A weak signal that closes a fresh circuit is as good as new. This is why digital signals can travel any distance.
+  - **Control is separate from what it controls.** The coil's loop and the contacts' loop never touch. A small current can command a large one.
+  - **A switch worked by a current.** That is the relay in one phrase, and the single idea that Part II builds on.
+  - **Outputs can be inputs.** Because a relay's output is the same kind of thing as its input, relays can be arranged, and arrangements can decide.
+</CarryForward>
+
+Part II begins with those three arrangements, and, or, and not, built one relay at a time.

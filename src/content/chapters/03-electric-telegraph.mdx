@@ -3,11 +3,64 @@ title: "The Electric Telegraph"
 deck: "Replace the valley with a wire and the fire with a current, and the hills stop mattering."
 part: signals
 order: 3
-stub: true
 ---
 
-A battery at one end, a wire, and at the other end something that moves when current flows: a needle that twitches, a lever that clicks. The single yes from Chapter 1 now travels inside copper rather than across a line of sight, and for the first time a message does not care whether it is night or foggy.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-This chapter covers how that worked in practice, why wires and poles spread faster than towers ever did, and what it meant for a message to arrive before the weather.
+## What the towers could not do
 
-The interactive will let you close a switch on one side of the screen and watch a sounder click on the other.
+Make a list of what stopped Chappe's towers. Night. Fog. Rain. A tired operator. A hill in the wrong place. Every item on the list is about *seeing*: the whole system rested on one person being able to see a shape on a mast several kilometres away, and anything that got between the eye and the mast broke it.
+
+The electric telegraph removed seeing from the list. It did not make the signal cleverer. It gave the same yes-or-no a different thing to travel in, and the new thing, a wire, does not care whether the sun is up.
+
+To understand it you need three facts about electricity, and only three. None of them requires an equation.
+
+## Three facts
+
+**First: a battery pushes.** In 1800 Alessandro Volta stacked discs of two different metals with brine-soaked cloth between them and found that the stack produced a steady push, a pressure that would drive a flow through anything joined across its ends. Before Volta, electricity came in sparks, there and gone. After him it came as a current you could keep.
+
+**Second: the flow needs a loop.** Current moves only when there is an unbroken path out of one end of the battery and back into the other. Cut the path anywhere, and the flow stops everywhere, at once, along the whole length. This is the piece that makes a telegraph possible. Join a battery to a very long wire and bring the wire back. Break the loop with a gap you can open and close with your finger. That gap is a switch, and the telegraph people called it a key. Key down, the loop is complete and current flows. Key up, nothing flows. Two states. We have met them before.
+
+**Third: a current can move iron.** In 1820 a Danish lecturer, Hans Christian Ørsted, noticed a compass needle swing when he closed a circuit nearby. A moving current makes a magnetic push around it. A few years later it was found that winding the wire into a coil around an iron bar made the push far stronger, strong enough to lift weights, and that the pull vanished the instant the current stopped. An electromagnet: a magnet you can switch on and off from a distance by opening and closing a loop.
+
+Put the three together. A battery at one end of a long wire. A key beside it. At the far end, a coil of wire around iron and, resting near the iron, a small lever on a spring. Press the key and, with no delay you could notice, the lever at the far end snaps down. Let go and the spring lifts it back. You have moved something a hundred kilometres away with your finger, and you have done it in the dark.
+
+## Needles and sounders
+
+Two designs shared the 1830s and 40s, and the difference between them is instructive.
+
+In England, William Cooke and Charles Wheatstone built a telegraph that pointed. Five needles stood in a row on a board printed with letters. Pressing keys sent current through chosen pairs of wires, two needles swung, and the letter where their lines crossed was the one being sent. It needed no code to learn: you looked where the needles pointed. It also needed five wires, and had room for only twenty letters, so messages went without C, J, Q, U, X and Z. A line of it opened in 1838 along the railway west of London, and railwaymen used it to tell the next station a train was coming.
+
+In America, Morse and Vail built a telegraph that clicked. One wire, one key, one electromagnet. The lever at the far end originally pressed marks into paper tape, and then, as we saw in the last chapter, the operators stopped reading the tape and listened instead. One wire meant a cheaper line. A code meant training the operator, but a trained operator was faster than any set of needles. The first long line, from Washington to Baltimore, opened in 1844. Within a decade the clicking design had won nearly everywhere.
+
+The lesson is not that one design was clever and the other was not. It is that *the cost of the line* decided the matter. Wire was the expensive part, and a design that needed one wire instead of five could cover five times the country for the same money. The code was the price of the saving, and it turned out to be a price people were glad to pay. There was even a trick, found in 1838, that got rid of the return wire: drive a metal plate into the damp earth at each end and the ground itself completes the loop.
+
+<TryIt title="Close the loop" note="Hold the key down and watch the sounder at the far end. Then lengthen the line and see what happens to the click.">
+  <telegraph-line></telegraph-line>
+</TryIt>
+
+## What the wire did to the world
+
+Lines went up along railways first, because the railway already owned a strip of land and had an urgent reason to know where its trains were. Then along roads, and between cities, and by 1866 under the Atlantic. A message that had taken ten days by ship now took minutes. Prices in one market could be known in another on the same morning. Newspapers printed news from the day before rather than the week before. Railways ran to a shared clock, because the wire made it possible to have a shared clock at all.
+
+Something else changed that is easy to miss from here. Chappe's towers were built by the state, for the state. The wire was built mostly by companies, for anyone who paid by the word. The telegraph office with its counter and its clerk was the first place an ordinary person could walk in off the street and send a message faster than a horse. The signal had become a service.
+
+And yet the wire knew nothing. It carried current or it did not. The key at one end made the pattern and the sounder at the other made the clicks, and every bit of meaning was supplied by the two people at the ends, one choosing the pattern and one hearing it as words. If you are keeping a list of where the meaning lives, add another line: not in the wire.
+
+## The thing that did not scale
+
+Press the key in the interactive above and lengthen the line. At some point the sounder stops answering.
+
+This happened on real lines too. A wire resists the current pushed through it, and a longer wire resists more, so the current that arrives at the far end is weaker than the current that left. Make the line long enough and the current grows too feeble to pull the lever. A bigger battery helps, up to a point. Thicker wire helps, at a cost. Neither helps enough to cross a continent.
+
+You already know the shape of the answer, because you met it on the hills. The watcher who sees a faint fire does not pass along a faint fire. They light a fresh one. What the telegraph needed was a way for a weak current, arriving at the end of a long line, to start a fresh current from a fresh battery into the next line. A device to do exactly that already existed in a laboratory in 1835, and it is the subject of the next chapter, which is short, and on which everything else rests.
+
+<CarryForward>
+  - **A bit can ride anything with two states.** Lit or dark, current or no current. The carrier changed; the message did not.
+  - **A switch is a sender.** Opening and closing a loop *is* the act of signalling. Everything that transmits is, at bottom, a switch.
+  - **Detection is by effect.** You cannot see a current, but you can see what it moves. An electromagnet turns an invisible flow into a visible pull.
+  - **Signals weaken with distance.** A long wire delivers less than it was given. Something has to remake the signal along the way.
+</CarryForward>
+
+Next: a small iron lever that lets one current start another, and in doing so becomes the first part of a thinking machine.
