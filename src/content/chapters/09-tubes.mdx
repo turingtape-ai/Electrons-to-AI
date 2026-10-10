@@ -3,9 +3,68 @@ title: "Tubes"
 deck: "A relay with no moving parts: a glowing wire, a metal plate, and a grid that lets electrons through or holds them back."
 part: shrinking
 order: 9
-stub: true
 ---
 
-Relays are slow because iron is heavy. This chapter introduces the vacuum tube, which does the relay's job with a stream of electrons and a small voltage on a wire grid, thousands of times faster. It also looks at what a room full of tubes cost in heat, electricity and failures, and why that cost drove the search for something better.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will show a tube's grid voltage opening and closing the flow of current.
+## The weight of iron
+
+The relay computer at the end of Part II works, and it is slow, and the two facts have the same cause. Every time a relay switches, a piece of iron has to move. Iron has weight. Getting it going and stopping it again takes a few thousandths of a second, and in that time nothing else in that part of the machine can happen. A multiplication on the Harvard Mark I took about six seconds. The machine ran, in effect, at the speed of a very fast knitting needle.
+
+There is also the matter of wear. A contact that opens and closes a million times gets pitted and dirty. A spring tires. A machine with thousands of relays, each switching many times a second, is always a few hours from its next failure.
+
+So the question that opens Part III is simple to ask. Is there a switch with nothing to move?
+
+The answer is yes, and it was found by accident, by someone looking for something else.
+
+## A haze of electrons
+
+In 1883 Thomas Edison, trying to work out why the inside of his light bulbs turned black, sealed a small metal plate into a bulb near the glowing filament and noticed that a current flowed from the filament to the plate across the empty space, but never the other way. He wrote it down, patented it, and did nothing with it.
+
+What he had seen, though nobody could have said so then, is that a hot wire throws off electrons the way a hot stove throws off a shimmer of heat. In a vacuum there is nothing to stop them. If a nearby plate is held at a positive voltage, the electrons are drawn across to it, and a current flows through empty space. Reverse the voltage and the plate pushes them back; nothing flows. It is a one-way valve for current, and by 1904 it was being used in radio receivers.
+
+In 1906 Lee de Forest put a third piece of metal into the bulb: a zigzag of fine wire, a *grid*, between the hot filament and the plate. The electrons had to pass through the grid to reach the plate. And here is the whole invention: if the grid is made even slightly negative, it pushes the electrons back toward the filament and chokes off the flow to the plate. Make the grid a little less negative and the flow resumes. A tiny change on the grid controls a large current to the plate.
+
+De Forest wanted an amplifier, and that is what radio and telephones used it for, for fifty years. But look at it with Part I and Part II in your head. A small signal, drawing almost no current itself, controls a large current in a separate circuit. The grid is the coil. The plate current is the contact. It is a relay. Except that the only thing that moves is the electrons themselves, which weigh almost nothing, and so the thing switches not in thousandths of a second but in millionths.
+
+<TryIt title="The grid decides" note="Drag the grid voltage. Watch what the electron haze does, and what the plate current does. Then use it as a switch.">
+  <vacuum-tube></vacuum-tube>
+</TryIt>
+
+## A thousand times faster
+
+Stop for a moment on the size of that step. A relay switches in about a thousandth of a second. A tube switches in about a millionth. Everything in Part II was built from the truth table of a switch, and the truth table has not changed. The gates are the same gates, the adder is the same adder, the fetch-decode-execute cycle is the same cycle. Only the thing inside the gate symbol has been swapped, and the whole machine runs a thousand times faster for it. That is what the abstraction in Chapter 5 bought us. Nobody had to redesign the adder.
+
+<TryIt title="How many switchings fit in a second" note="Each row is a device doing nothing but switching on and off as fast as it can. Press start and let them run for one second.">
+  <switch-race devices="relay,tube"></switch-race>
+</TryIt>
+
+## Rooms full of glass
+
+The first machines to use tubes for logic were built in secret during the Second World War. In England, an engineer named Tommy Flowers argued, against most expert opinion, that a machine with over a thousand tubes could be made reliable enough to run for hours, and built one to break German cipher traffic. The first Colossus started work in early 1944 with about 1,600 tubes. The second, with about 2,400, was ready for the invasion of France.
+
+In the United States, ENIAC was finished at the end of 1945: more than 17,000 tubes, 27 tonnes, a hall of its own, and 150 kilowatts of electricity, roughly the draw of a hundred homes, most of it leaving as heat. It could do five thousand additions a second. The relay machines could do a handful. And in Manchester in June 1948 a small experimental machine called the Baby ran the first program ever held in the same memory as its data, the stored-program arrangement from the end of Chapter 8, finally built.
+
+Flowers had been right about reliability, but only just, and only with care. A tube is a small heater in a glass bottle. The heater burns out, like a light bulb, after a few thousand hours. With one tube, that is a replacement every few months. With seventeen thousand, by simple arithmetic, it is a failure every few hours, and ENIAC's engineers learned to run the tubes gently, well below their rated voltage, to stretch that out to a day or two. Even so, a share of every day went to finding the dead tube.
+
+## The bill
+
+So a tube is a wonderful switch with three faults, all of them the same fault seen from different sides.
+
+It is hot. Every tube spends power on its heater whether or not it is switching, and the heat has to be carried away.
+
+It is big. A tube is the size of a thumb, because a heater, a grid and a plate have to be arranged inside a glass envelope with a vacuum in it, and the glass has to be strong enough to hold the vacuum.
+
+And it dies, because the heater is a filament and filaments burn out. The more tubes you have, the more often one of them is dead at any moment, so there is a ceiling on how big a tube machine can usefully be, and the machines of the early 1950s were already near it.
+
+What was wanted was a switch with no heater, no glass, and no vacuum. Something that did what the grid did, let a small voltage throttle a large current, inside a solid material that never warmed up. That is the next chapter, and it is the invention on which everything else in this book depends.
+
+<CarryForward>
+  - **Speed is about mass.** A relay is slow because iron has to move. A tube moves only electrons, and is a thousand times faster.
+  - **Same table, new insides.** Gates, adders and the fetch-execute cycle did not change when the relay was swapped for a tube. The abstraction held.
+  - **A small voltage can throttle a large current.** The grid controls the plate without touching it: control and controlled kept separate, again.
+  - **Failures scale with count.** Any part that wears out sets a ceiling on how many of it you can use. Tubes hit that ceiling in a decade.
+</CarryForward>
+
+Next: the same throttle, built into a sliver of crystal, with nothing in it to burn out.

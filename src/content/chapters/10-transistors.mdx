@@ -3,9 +3,66 @@ title: "Transistors"
 deck: "The same job as the tube, done inside a sliver of crystal that never warms up."
 part: shrinking
 order: 10
-stub: true
 ---
 
-Some materials can be persuaded to conduct or not conduct depending on a small push from the side. This chapter explains that idea without equations, introduces the transistor as a switch made of such material, and explains why small and cold mattered more than anyone first guessed.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will treat a transistor as a valve you can open and close with a slider.
+## A material that can be talked into it
+
+Most materials are decided about electricity. Copper lets current through, and nothing you do to a copper wire at ordinary voltages will change that. Glass does not, and nothing will change that either. For most of history those were the only two kinds of thing: conductors and insulators, wires and the stuff you wrap around wires.
+
+A few materials are undecided. Silicon is one. On its own, pure silicon conducts poorly, somewhere between a wire and a brick, which is where the name *semiconductor* comes from. But it is persuadable. Mix in a trace of a different element, a few atoms in a million, and the crystal gains a few spare electrons that are free to move, and it conducts somewhat better. Mix in a trace of another element instead and the crystal is left with a few *gaps* where electrons ought to be, and those gaps can move too, like an empty seat shuffling along a row as people slide over. Either way the crystal now has something loose in it that an electric push can move.
+
+And, which is the point, you can change its mind from outside. Put an electric field across a thin region of such a crystal, and you draw loose charges into that region or drive them out of it. You can make a stripe of silicon conduct, or stop conducting, by holding a voltage near it, without touching it. That is exactly what the tube's grid did to the haze of electrons, except that here the haze is inside a solid, there is no heater making it, and there is no vacuum to keep.
+
+## Bell Labs, 1947
+
+The first device to do this on purpose was built at Bell Telephone Laboratories in December 1947 by John Bardeen and Walter Brattain, with two gold contacts pressed into a sliver of germanium, and it was ugly and temperamental and it amplified. Their colleague William Shockley, who had been trying to make such a thing work for years, designed a more orderly version within weeks. The laboratory held a competition to name it, and the winner was *transistor*.
+
+The transistor that matters for us is a later and cleaner design from the same laboratory, worked out in 1959 and now made by the trillion. Picture a thin bar of silicon with a loose-charge region at each end: call them the *source* and the *drain*. Between them the bar is of the other kind, and does not conduct. Lying across the gap, separated from the silicon by an insulating skin of glass thinner than anything you can see, is a strip of metal: the *gate*.
+
+Put a voltage on the gate. The field reaches through the thin glass and draws loose charges up from the silicon into a thin layer just under it, a *channel*, joining source to drain. Current can now flow along the bar. Take the voltage away and the channel dissolves and the bar is an insulator again.
+
+Gate, source, drain. Grid, cathode, plate. Coil, battery, contact. Three devices across three chapters with the same shape: a control that is kept apart from the thing it controls, and a small signal on the control throttling a large current through the rest.
+
+<TryIt title="Open the channel" note="Raise the gate voltage and watch a channel form under the gate. Nothing is heated and nothing moves but charge.">
+  <transistor-valve></transistor-valve>
+</TryIt>
+
+## Why it changed everything
+
+The transistor does nothing the tube could not do, and it is a better switch in every way that matters, for reasons that are all consequences of there being nothing inside it but crystal.
+
+It has no heater. It uses no power sitting idle, needs no warming up, and does not slowly cook itself to death. The failure that set a ceiling on tube machines simply does not happen.
+
+It is small, and more importantly it can be *made* small. A tube has to be big enough to hold a vacuum and a hot wire. A transistor has to be big enough to hold a channel, and a channel can be as narrow as you can draw it. Nothing about the design says how large it must be. That sentence is the whole of the next two chapters.
+
+Its gate draws almost no current, because the glass skin insulates it. The tube's grid was like that too, and the relay's coil was not, which is why a relay's output could only drive a few other relays before it ran out of push. A transistor's output can drive many gates, which is good for building large circuits.
+
+And it is fast, for the same reason the tube was fast: nothing moves but charge, and with everything close together the charge has less far to go. Early transistors switched in millionths of a second. Modern ones switch in a few trillionths.
+
+Hearing aids got transistors first, in 1953, then pocket radios in 1954, and computers within a few years: a Bell Labs machine in 1954, and by the end of the decade the first commercial transistor computers, which ran faster than the tube machines, filled a fraction of the space, and did not need a technician on duty to hunt for the dead tube.
+
+## The pair that burns nothing
+
+One more arrangement needs to be met here, because it is the one every chip in the world now uses, and because it explains a fact that ought to be puzzling: how billions of switches can sit on a fingernail without melting it.
+
+Transistors come in two complementary kinds. One opens its channel when its gate is pulled high, the other when its gate is pulled low. Stack one of each between the power supply and the ground, with the output taken from the middle, and feed the same input to both gates. When the input is high, the lower transistor conducts and the upper is off, so the output is pulled down to ground. When the input is low, the upper conducts and the lower is off, and the output is pulled up to the supply. The output is always the opposite of the input: a NOT gate, from two transistors.
+
+Now notice what is not happening. In either steady state, one of the two transistors is off, so there is no path from the supply to ground, so no current flows. The gate uses power only for the instant it is actually changing. A relay coil or a tube heater burns power all the time. This pair burns power only when it has something to say. It is called a complementary pair, and the arrangement is CMOS, and a chip with ten billion transistors is cool enough to touch because at any moment almost all of them are sitting in one of those two states, drawing nothing.
+
+<TryIt title="Two transistors, one NOT" note="Flip the input. Watch which transistor conducts, where the output goes, and whether any current flows from the supply to the ground.">
+  <cmos-inverter></cmos-inverter>
+</TryIt>
+
+Four transistors arranged the same way make a NAND, an AND with a NOT after it, and in Chapter 5 we saw that a single kind of gate like that can build any truth table. So the whole of Part II, every gate and adder and latch and the machine itself, can be made from these complementary pairs, cold, small, and fast. All that remains is to make a great many of them at once.
+
+<CarryForward>
+  - **Some crystals are persuadable.** A voltage held near a thin stripe of silicon can make it conduct or not. That is a switch with no moving parts and no heater.
+  - **Gate, source, drain.** The same three-part shape as grid, cathode, plate, and coil, battery, contact. Control kept apart from the controlled.
+  - **Nothing in it has to be big.** A channel can be as narrow as it can be drawn. This is the fact that Part III is about.
+  - **Complementary pairs burn power only when switching.** That is why billions of them can share a chip.
+</CarryForward>
+
+Next: instead of making transistors one at a time and wiring them together, draw them all at once, wires included, on a single piece of silicon.

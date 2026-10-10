@@ -3,9 +3,64 @@ title: "Moore's Law"
 deck: "An observation about shrinking that held for fifty years and reshaped everything downstream."
 part: shrinking
 order: 12
-stub: true
 ---
 
-In 1965 an engineer noticed that the number of transistors that could be put on a chip was doubling every year or two, and guessed it would continue. It did, for a very long time. This chapter looks at what that doubling bought, what it cost, what finally slowed it, and why so much of the software and learning in later Parts depends on it.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will be a slider across the decades, showing how many switches fit in a fingernail.
+## A graph with four points on it
+
+In 1965 a trade magazine asked Gordon Moore, then head of research at Fairchild, to write a short piece about where integrated circuits were going. He had a handful of data points, the most complex chip his company had made each year since 1959, and he plotted them. The number of components on a chip had doubled every year. He drew the line out ten years, to 1975, and predicted chips with sixty-five thousand components, which at the time sounded like a joke.
+
+It was not a law, and he did not call it one. It was a trend line through four points. But the prediction came true, almost exactly, and in 1975 he revised the rate to doubling every two years, and that came true as well, and kept coming true, until the thing that had been an observation turned into a schedule. Companies planned their factories around it. The industry wrote joint roadmaps committing to the next doubling and the one after. Engineers who missed the pace lost their jobs to engineers who did not. For fifty years the most reliable fact in technology was a line drawn in 1965 by a man with a ruler, and it was reliable largely because everyone had agreed to make it so.
+
+<TryIt title="Fifty years of doubling" note="Transistors on a single chip, 1971 to 2024. Switch between the two scales. The dashed line is a plain doubling every two years from the first point.">
+  <moore-chart></moore-chart>
+</TryIt>
+
+Look at the two scales in the chart. On an ordinary scale the line is flat along the bottom for forty years and then goes vertical, which is what doubling looks like when you draw it honestly, and it is useless: you cannot see anything that happened before 2010. On the other scale, each step up the side is ten times the one below, and the same data is a straight line. That second scale is the only way to see a doubling process, and it is worth getting used to, because it is how you will have to look at nearly everything in the last three Parts of this book.
+
+## Why smaller was better in every way at once
+
+For most of those fifty years, shrinking a transistor did not just give you more of them. It gave you everything else as well, for free, and understanding why explains both the golden age and its end.
+
+Make a transistor smaller and the channel is shorter, so charge has less far to go, so it switches faster. Make it smaller and the gate has less area, so it takes less charge to fill, so each switching uses less energy. And because each one uses less energy, you can pack more of them into the same space without the chip getting hotter. In 1974 an IBM engineer named Robert Dennard wrote down the rules for doing this properly, and they said, in effect: shrink every dimension by the same factor, lower the voltage by the same factor, and you get more transistors, each faster, each cooler, and the chip as a whole drawing the same power as before. Every generation was a strict improvement in all directions at once.
+
+Nothing else in engineering works like that. A car that is twice as fast is not also twice as cheap and half as thirsty. For thirty years, chips were.
+
+## What it bought
+
+The chip in 1971 had 2,300 transistors. The large chips of 2024 have more than two hundred billion. That is a factor of about a hundred million, and the price of a transistor fell by roughly the same factor, from something like a dollar to something like a hundred-millionth of a cent.
+
+Almost everything in the rest of this book is a consequence of that. Part IV is about software, and software could become what it is only because the machine underneath it was always about to be twice as fast and twice as roomy, so that a program that was wasteful today was fine next year. Part V is about graphics chips with thousands of small processors on them, which exist only because transistors became cheap enough to spend thousands of processors on drawing pictures. Parts VI through VIII are about networks of numbers that are trained by doing trillions of multiplications; the methods were known in the 1980s and did not work, mostly because the multiplications were too expensive. Then they were not.
+
+So when the later chapters say that something became possible, the reason, more often than not, is this chapter.
+
+## What it cost, and where it stopped
+
+The line in the chart is still going up. But three things changed along the way, and they shape the near future.
+
+**The free lunch ended in 2005.** Dennard's rules depended on lowering the voltage along with the size, and below about one volt that stopped working: transistors began leaking current even when off, like taps that will not quite close. The voltage could not fall further, so the power per switch stopped falling, so chips could no longer be made faster without getting hotter. Processor clock speeds, which had climbed from one megahertz to three thousand in thirty years, stalled, and have barely moved since. The industry's answer was to stop making one processor faster and put several on a chip instead: two, then four, then dozens. That is where Part V begins, and it is why the modern story of speed is a story of doing many things at once rather than one thing quickly.
+
+**The tools became astonishing, and nearly unaffordable.** To draw smaller shapes you need a shorter wavelength of light. Visible light ran out in the 1990s; ultraviolet ran out in the 2010s. The machines that print today's finest layers use a wavelength of thirteen nanometres, made by firing a laser at falling droplets of molten tin fifty thousand times a second, focused by mirrors polished to within a few atoms, because no lens is transparent to it. One such machine costs more than an airliner. A factory full of them costs twenty billion dollars, and three companies in the world can build the most advanced chips. The arithmetic of specks from the last chapter still rules; it has just gotten expensive to keep up with.
+
+**The atoms are in sight.** The features in a modern chip are a few dozen atoms across. The glass skin under a gate is a handful of atoms thick. The names the industry uses for its generations, three nanometres, two, have stopped meaning any physical length and are now, more or less, brand names for "the next one." Transistors are no longer flat but stand up as fins, and are becoming stacked ribbons, to keep the channel under control as it shrinks. There is room left, but not fifty years of it, and nobody serious pretends otherwise.
+
+<TryIt title="How small is small" note="Drag through the years and compare the smallest feature a factory could draw against things you know the size of.">
+  <feature-scale></feature-scale>
+</TryIt>
+
+## The shape of the curve
+
+So the honest summary is this. The number of transistors on a chip is still growing, more slowly, at great cost, by stacking and splitting and cleverness rather than by simple shrinking. The speed of a single transistor stopped improving twenty years ago. The cost per transistor, which fell for fifty years, has flattened. And the industry's remaining way forward is the one it turned to in 2005: do more things at the same time.
+
+Part III began with a relay that took a thousandth of a second to switch and ended with a chip holding two hundred billion switches that each take a few trillionths. The truth tables did not change. The adder did not change. The fetch-decode-execute cycle did not change. What changed is that the switch became free, and when something becomes free, people start using it for things nobody would have paid for. That is Part IV.
+
+<CarryForward>
+  - **Doubling is a straight line only on the right scale.** Learn to read the scale where each step is ten times the last. You will need it.
+  - **For thirty years, smaller meant faster and cooler too.** That coincidence, not just the shrinking, is what made the golden age.
+  - **It stopped in 2005.** Clock speeds stalled; the industry turned to many processors side by side. Everything in Part V follows from that.
+  - **The switch became free.** Software, graphics, and learning are what people built once they stopped having to count switches.
+</CarryForward>
+
+Part IV: what people do with a machine that follows instructions, once the instructions are the expensive part.

@@ -3,9 +3,70 @@ title: "Integrated Circuits"
 deck: "Instead of wiring switches together, draw them all at once on a single piece of silicon."
 part: shrinking
 order: 11
-stub: true
 ---
 
-Wiring transistors together by hand has a limit. This chapter introduces the idea of printing a whole circuit, switches and wires together, onto one surface using light and masks, so that a chip is in effect a photograph of a design. Making many at once is what made each one cheap.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will let you stack masks to build a single gate.
+## The tyranny of numbers
+
+By the late 1950s transistors were small, cool and reliable, and computers built from them were running into a wall that had nothing to do with the transistor itself.
+
+A computer with a hundred thousand transistors also has a few hundred thousand resistors and capacitors and, worse, something like a million soldered joints connecting them. Every joint is made by hand. Every joint can be made badly. Every joint is a place where a wire can work loose years later. The cost of the machine was no longer the cost of its switches; it was the cost of joining them, and the reliability of the machine was the reliability of its worst solder joint. An engineer at Bell Labs called it the tyranny of numbers. You could design a machine with a million parts, and nobody could build it.
+
+The way out was found twice, within months, by two people who did not know each other's work.
+
+## Draw it instead
+
+In the summer of 1958, Jack Kilby, new at Texas Instruments and left alone in the laboratory while everyone else was on holiday, built a complete circuit, transistor, resistors and capacitor, out of a single sliver of germanium. The parts were not made separately and wired together. They were different regions of the same crystal, with the connections between them, in his first version, made by tiny gold wires added by hand. It proved the idea. It did not yet solve the wiring.
+
+In January 1959, Robert Noyce at Fairchild Semiconductor wrote down the version that did. A colleague, Jean Hoerni, had just worked out how to make transistors with all their working parts under a flat, protective glass skin, built into the surface of a silicon wafer rather than sticking up out of it. Noyce saw that if the surface was flat and glassy, you could lay thin metal lines *on top of it*, through small holes in the glass, and those lines would be the wires. The transistors and the wires between them could be made in the same process, by the same kind of step, on the same piece of silicon. No solder. No hands.
+
+That is the integrated circuit, and the thing to understand about it is not that it is small, though it is. It is that it is *printed*.
+
+## Printing with light
+
+Here is how a layer of a chip is made, and it is the same for every layer.
+
+Start with a polished disc of pure silicon, a wafer. Coat it with a thin varnish that changes when light falls on it. Hold a stencil above it, a *mask*, with the pattern for this layer cut into it as clear and opaque regions, and shine light through the mask onto the varnish. Where the light lands, the varnish changes; wash away the changed part and the pattern is now a pattern of bare silicon and covered silicon. Now do something to the bare parts and not the covered parts: soak in a dopant that turns bare regions into the loose-charge kind of silicon, or grow a skin of glass, or etch away, or lay down a film of metal. Then strip the varnish and start again with the next mask.
+
+A few dozen masks, one after another, and the surface of the wafer has become a stack of patterned layers: regions of doped silicon that are the sources and drains, strips that are the gates, a film of glass with holes in it, metal lines through the holes, more glass, more metal, up to a dozen levels of wiring. Every transistor and every wire on the wafer was made by those same few dozen steps.
+
+Now the sentence that is the economic engine of the next sixty years. *The cost of a step does not depend on how many transistors the mask draws.* Shining light through a stencil takes the same time whether the stencil has a thousand shapes on it or a billion. So if you can draw the shapes smaller, you get more transistors per wafer for the same number of steps, and the cost of each transistor falls. Not by a little. By whatever factor you managed to shrink.
+
+<TryIt title="A chip, one layer at a time" note="This is a single NOT gate, the complementary pair from the last chapter, as a stack of printed layers. Add the layers in order and see how transistors and wiring come out of the same process.">
+  <mask-stack></mask-stack>
+</TryIt>
+
+## Specks of dust
+
+There is a catch, and it decides the shape of the whole industry.
+
+Wafers are not perfect. A speck of dust lands, a crystal has a flaw, a drop of chemical spreads unevenly, and wherever that happens the circuit under it is dead. A wafer is cut into many identical chips, the *dice*, and some fraction of them will have caught a defect. That fraction is the *yield*, and the yield is the number the business runs on.
+
+Now ask: what happens if you make each chip bigger, to fit more transistors? A bigger chip is a bigger target. Suppose a wafer has twenty defects scattered across it. Cut into four hundred small dice, twenty are lost and ninety-five percent are good. Cut into forty large dice, each ten times the size, and nearly every one of them catches at least one defect; you might get a handful of good chips from the whole wafer. The cost of a good chip goes up far faster than its size.
+
+So the industry learned that you do not get more transistors by making chips larger. You get them by making transistors smaller, so that more fit on a chip of roughly the same size. That is the pressure that drove the shrinking in the next chapter: not elegance, not speed, though those followed, but the arithmetic of specks.
+
+<TryIt title="The arithmetic of specks" note="Scatter defects on a wafer and change the size of the dice. Watch what happens to the number of good chips, and to the cost of each one.">
+  <wafer-yield></wafer-yield>
+</TryIt>
+
+## What a printed circuit made possible
+
+The first big customer was the Apollo program. The computer that guided the spacecraft to the Moon was built from about 2,800 identical chips, each holding two three-input NOR gates, bought at a time when a chip cost more than a week's wages and the government was willing to pay for the whole output of the industry to learn whether they could be trusted. They could.
+
+Through the 1960s chips grew from a few gates to a few hundred, and the first useful pieces of a computer began to fit on one: an adder, a register, a decoder. In 1970 Intel sold a memory chip holding a thousand bits, each bit stored not in a latch but as a charge on a tiny capacitor, topped up thousands of times a second before it leaked away. That is still a loop that keeps itself going, in the sense of Chapter 7; it is just a very cheap one, and within a few years it had replaced every other kind of memory.
+
+And in 1971 the same company sold a chip that held an entire processor: an arithmetic unit, registers, a program counter, the decoder, the whole fetch-decode-execute cycle from Chapter 8, in 2,300 transistors on a piece of silicon three millimetres by four. It was built for a calculator. It did everything the room of relays did.
+
+The tyranny of numbers was over, because there were no longer any numbers of parts to be tyrannised by. There was one part. The question became how much could be drawn on it, and the answer turned out to double, year after year, for fifty years.
+
+<CarryForward>
+  - **Print, do not assemble.** Transistors and wires are made together by the same patterned steps. Nobody joins anything.
+  - **A step costs the same however much it draws.** So shrinking the shapes makes each transistor cheaper by the shrink factor.
+  - **Defects set the size of a chip.** Bigger dice catch more specks. Progress means smaller transistors, not larger chips.
+  - **Wiring moved onto the chip.** Shorter wires, no solder, and the ceiling on part count simply vanished.
+</CarryForward>
+
+Next: an observation about this shrinking, made in 1965, that held for half a century and reshaped everything downstream.
