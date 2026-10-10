@@ -3,9 +3,67 @@ title: "Compilers"
 deck: "Write for people, then let a program translate for the machine."
 part: software
 order: 14
-stub: true
 ---
 
-Numbers are a poor language for people. This chapter follows the move from raw instructions to names, from names to languages with arithmetic and structure, and explains step by step what a compiler does to turn a line a person wrote into a list of numbers the machine can run.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will show an expression being translated into instructions as you type it.
+## A formula is not a list of steps
+
+Assembly language gave instructions names, but it left one thing exactly as it was: one line of assembly is one instruction. If you want the machine to work out *(a + b) × 3 − c*, you cannot write that. You have to write the six or seven steps that do it, in order, with somewhere to put the intermediate results, and you have to do that for every formula in a program that might have thousands.
+
+People do not think in steps like that. An engineer thinks in formulas; a bookkeeper thinks in rules. The gap between how a person states a problem and how a machine has to be told to do it was, by the mid-1950s, the single largest cost in computing. Programmers spent most of their time on the mechanical conversion of ideas into instructions, and most of their errors were in that conversion.
+
+In 1957 a team at IBM led by John Backus released a program that read formulas and loops, written more or less the way a scientist would write them on paper, and produced machine code to carry them out. They called the language FORTRAN, for formula translation, and the program that did the translating was a compiler. The word had been coined a few years before by Grace Hopper, who had built an earlier and more limited translator and spent years persuading people that a computer could be made to program itself. Most experts expected the machine-written code to be hopelessly slow. It was nearly as good as hand-written, and within a few years almost nobody wrote scientific programs by hand again.
+
+## What a compiler does
+
+A compiler is a program, and it works in stages that are each simple enough to describe. Watch them in the interactive below as you read.
+
+First it breaks the text into words. Not English words; the pieces of the formula: a name, a number, a plus sign, a bracket. This is the easy part, and it looks like what you do when you read.
+
+Then it works out the *shape* of the formula, which is the hard and interesting part. In *(a + b) × 3 − c*, the multiplication has to happen before the subtraction, and the bracketed addition before the multiplication, and this is not written anywhere in the text; it comes from rules about which operators bind tighter, rules you learned at school and no longer notice. The compiler applies those rules and builds a tree: the subtraction at the top, with the multiplication as its left branch and *c* as its right, and under the multiplication the bracketed sum and the 3. The tree is the formula's meaning with the ambiguity taken out. Two formulas with different brackets have different trees even if they have the same words.
+
+Finally it walks the tree and writes instructions. To compute a node you first compute its branches, which may need somewhere to be put down, and then do the node's own operation. The compiler invents the temporary storage, chooses the order, and emits the steps, exactly the steps you would have written by hand in the last chapter, except that it does not make mistakes and does not get bored.
+
+<TryIt title="From formula to steps" note="Type any formula using + − × ÷, brackets, numbers, and the names a, b, c, x, y. Watch it become words, then a tree, then instructions for the small machine.">
+  <expression-compiler></expression-compiler>
+</TryIt>
+
+## More than formulas
+
+Once a program can turn trees into instructions, every other convenience of a language is a matter of adding kinds of tree.
+
+A *loop*, "do this ten times" or "while this is true," becomes a compare and a conditional jump back to the top, the pattern you stepped through in the countdown program in Chapter 8. The programmer writes the intent; the compiler places the jump and invents the counter.
+
+A *variable*, a named place to hold a value, becomes a row of memory chosen by the compiler. The programmer writes the name and never learns the address. This is the point at which addresses disappear from most people's experience of computing. They are still there; a program just no longer has to think about them.
+
+A *function*, a named block of steps that can be used from many places, becomes a jump to the block together with a note of where to come back to, so that the block can end with a jump back. Since functions can use other functions, the notes pile up and are taken off in reverse order, last in, first out. That pile is called the stack, and it is where every program keeps its place in its own work. If you have ever seen a program crash with a message about a "stack overflow," it is the pile grown too tall.
+
+None of these needs new hardware. The small machine from Chapter 8 can do all of them. What is new is that a person no longer has to arrange them. A program does, from a description of what is wanted.
+
+## The ladder
+
+It helps to see the same job at several heights. The interactive below shows one small task, adding the numbers from one to ten, written four ways: as the raw numbers the machine executes, as assembly, in a language of the kind FORTRAN began, and in a language of the kind most people learn today.
+
+<TryIt title="One task, four heights" note="The same program at four levels. Notice what the writer has to think about at each one, and what has become somebody else's problem.">
+  <language-ladder></language-ladder>
+</TryIt>
+
+Each step up, the writer thinks about less of the machine and more of the problem. Each step up is paid for by a translator, and the translator is itself a program, written in some lower language and compiled by an earlier compiler, all the way down to the first assembler, which someone wrote in numbers by hand. It is a chain of tools, each built with the one before, which by now is a pattern you will recognise.
+
+Two things followed from compilers that changed the shape of computing as much as any chip did.
+
+The first is that programs stopped belonging to machines. A FORTRAN program could be compiled for a different computer, with a different instruction set, by a different compiler, and run. Software could outlive the hardware it was written on, and a program written in 1970 can, with some effort, be run today. Before compilers that was unthinkable; a program was a list of numbers for one particular machine.
+
+The second is that programs could afford to be wasteful, and so could be written by more people, faster. A compiler's output is rarely as tight as what an expert would write by hand. But Moore's Law meant the machine was about to be twice as fast anyway, and a program finished this year in a high-level language beat a tighter one finished in three years by hand. The free switch bought the expensive programmer's time, and that trade, made over and over, is why there are a hundred million programmers rather than a few thousand.
+
+<CarryForward>
+  - **A compiler is a program that writes programs from descriptions.** Words, then a tree, then instructions. The tree is the meaning with the ambiguity removed.
+  - **Loops, variables, and functions are patterns of jumps and addresses.** The compiler arranges them so people never have to.
+  - **The stack** is the pile of places to come back to. Last in, first out.
+  - **Programs stopped belonging to machines.** Recompile and run. Software outlives hardware.
+  - **Wasteful and fast beat tight and slow,** because the machine was always about to double.
+</CarryForward>
+
+Next: one machine, many programs at once, and the program whose job is to keep them from noticing each other.

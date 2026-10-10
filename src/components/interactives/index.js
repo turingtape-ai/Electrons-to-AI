@@ -21,6 +21,14 @@ import { MaskStack } from './mask-stack.js';
 import { WaferYield } from './wafer-yield.js';
 import { MooreChart } from './moore-chart.js';
 import { FeatureScale } from './feature-scale.js';
+import { InstructionDecoder } from './instruction-decoder.js';
+import { AssemblerView } from './assembler-view.js';
+import { ExpressionCompiler } from './expression-compiler.js';
+import { LanguageLadder } from './language-ladder.js';
+import { TimeSlicer } from './time-slicer.js';
+import { VirtualMemory } from './virtual-memory.js';
+import { PacketRouter } from './packet-router.js';
+import { ProtocolStack } from './protocol-stack.js';
 
 const registry = {
   'beacon-chain': BeaconChain,
@@ -44,6 +52,14 @@ const registry = {
   'wafer-yield': WaferYield,
   'moore-chart': MooreChart,
   'feature-scale': FeatureScale,
+  'instruction-decoder': InstructionDecoder,
+  'assembler-view': AssemblerView,
+  'expression-compiler': ExpressionCompiler,
+  'language-ladder': LanguageLadder,
+  'time-slicer': TimeSlicer,
+  'virtual-memory': VirtualMemory,
+  'packet-router': PacketRouter,
+  'protocol-stack': ProtocolStack,
 };
 
 for (const [tag, cls] of Object.entries(registry)) {

@@ -3,9 +3,65 @@ title: "Operating Systems"
 deck: "One machine, many programs, and a referee that lets each believe it is alone."
 part: software
 order: 15
-stub: true
 ---
 
-A single processor can only do one thing at a time, yet a computer appears to do many. This chapter introduces the program that manages all the others: slicing time, fencing off memory, naming files, and speaking to the hardware so that nobody else has to.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will show a scheduler handing out slices of time to several programs.
+## A machine too valuable to wait
+
+In 1960 a large computer cost as much as a building and did one thing at a time. A program was handed in as a deck of punched cards; an operator fed it to the machine; the machine ran it, printed the result, and sat idle while the operator fetched the next deck. For a machine that cost hundreds of dollars an hour, the idle minutes between jobs were an outrage, and the first thing anyone would call an operating system was a small program that stayed in memory and loaded the next job itself, with no human in between.
+
+That is still what an operating system is at bottom: the program that is always there, in charge of the machine, running the other programs. But two further problems turned it into something much larger, and both come from wanting the machine to do more than one thing at a time.
+
+The first problem is that a program spends most of its life waiting. It asks the disk for a record and the disk takes ten milliseconds to answer, during which the processor could have done a hundred thousand instructions. It asks the person at the keyboard for a letter and the person takes half a second. If the processor simply waits, nearly all of it is wasted. The fix is obvious once stated: while one program waits, run another. But that means several programs loaded at once, sharing the processor and the memory, and that creates the second problem, which is keeping them out of each other's way.
+
+## Taking turns
+
+Sharing the processor works like this. A clock in the hardware is set to tap the processor on the shoulder every few milliseconds. The tap is called an interrupt, and it is a jump the running program did not ask for: whatever the program was doing, the processor saves where it was, and jumps into the operating system. The operating system notes down the program's registers, every value it was working with, picks another program that is ready to run, restores *that* program's saved registers, and jumps back into it exactly where it had been interrupted some milliseconds earlier. The second program carries on without knowing it ever stopped.
+
+This swap is called a context switch, and done a few hundred times a second it produces an illusion that is the basis of every computer you have used: each program appears to have the whole machine to itself, and all of them appear to run at the same time. The appearance is false. On a single processor, exactly one instruction is being executed at any instant. The rest are frozen, mid-step, their registers written down in a table, waiting their turn.
+
+Programs that are waiting for something, a disk, a key, a packet, tell the operating system so, and are not given turns until the thing arrives. That is where the idle time goes: into other programs' turns. The part of the operating system that decides whose turn is next is called the scheduler, and its choices are what make a machine feel quick or sluggish. Give the calculation long turns and the music player misses its next note. Give everyone short turns and the switching itself eats the time.
+
+<TryIt title="Whose turn" note="Three programs share one processor. Change the length of a turn and see who suffers. The music player needs a short turn every twenty milliseconds or it stutters.">
+  <time-slicer></time-slicer>
+</TryIt>
+
+## Fences in memory
+
+The second problem is memory. If two programs are loaded at once, both compiled to use rows 0 to 999, they cannot both actually have rows 0 to 999. And even if they are placed in different parts of memory, a program with a mistake in it, or a malicious one, could write into rows that belong to another, or to the operating system itself.
+
+The fix is a layer of translation, done by hardware, between the addresses a program uses and the rows of memory that actually exist. Each program is given the impression that it owns a memory starting at 0. Its memory is divided into pages, of a few thousand bytes each, and the operating system keeps a table for each program saying which real block of memory each page lives in, if any. Every time the program reads or writes an address, the hardware looks up the page in the current program's table and substitutes the real location, in a fraction of an instruction, without the program being aware of it.
+
+Three things fall out of this at once. Programs can be placed anywhere, because the table absorbs the difference. Programs cannot touch each other's memory, because their tables simply do not contain each other's pages; an attempt to reach a page that is not in the table stops the program and hands control to the operating system, which usually ends it with a message. And a program can be given the impression of more memory than the machine has, because a page that has not been used for a while can be copied out to disk and its table entry marked "not here"; if the program touches it again, the hardware stops the program, the operating system fetches the page back, and the program resumes with no idea anything happened.
+
+<TryIt title="Private addresses" note="Two programs, each believing its memory starts at 0. Follow their pages to the real memory, then have one of them reach for the other's.">
+  <virtual-memory></virtual-memory>
+</TryIt>
+
+There is one more piece needed for any of this to hold. If a program could change the page tables itself, or turn off the interrupt clock, the fences would mean nothing. So the processor has a single bit that says whether it is running the operating system or an ordinary program, and the instructions that touch the tables and the clock work only when that bit says operating system. An ordinary program that wants something only the operating system can do, read a file, send a packet, get more memory, has to ask: it executes a special instruction that jumps into the operating system and flips the bit, the operating system does the work on the program's behalf if it approves, then flips the bit back and returns. That door is called a system call, and it is the only way through the fence. Everything a program ever does to the world outside its own memory goes through it.
+
+## Names for everything else
+
+With the processor shared and memory fenced, what remains is the rest of the machine: disks, screens, keyboards, printers, the network. Every one of them is a different piece of hardware with its own peculiar way of being spoken to, and no program should have to know any of it.
+
+So the operating system gives them names and pretends they are simple. A disk, which is really a stack of spinning magnetic platters with heads that have to be moved to the right track, is presented as a set of files: named sequences of bytes you can open, read, write, and close, arranged in directories. The programs that know how to speak to a particular disk, or a particular screen, are called drivers, and they live inside the operating system, so that a program which writes to a file need not know whether the file is on a spinning disk, a memory chip, or a machine on the other side of the world.
+
+The system built at Bell Labs from 1969, called Unix, took this furthest. In Unix nearly everything was a file, including the keyboard, the screen, and connections to other programs, so that a program written to read a file could read from any of them. Programs were small and did one thing, and the operating system made it easy to join the output of one to the input of the next, so that large tasks were assembled from small tools. And Unix was rewritten in a high-level language, C, which meant it could be compiled for new machines rather than rewritten for each, which, as the last chapter said about programs, is why it outlived every machine it was first built on. Nearly every phone, server, and most computers in the world now run a descendant of it.
+
+## What the referee is
+
+Step back and notice what the operating system has become. It is a program that other programs cannot see, running in the gaps between their turns, keeping each of them inside a private memory, answering their requests through one door, and translating between their simple picture of the world, files and turns and a flat memory starting at 0, and the actual machine, which is a tangle of timing, hardware registers, and spinning platters. Every program is written for the simple picture. None of them would run for a second on the actual machine without the referee in between.
+
+That is one more abstraction layer, and by now you can see its shape before it is pointed out: a promise about behaviour, a mechanism hidden underneath, and a great deal built on the promise by people who never look at the mechanism.
+
+<CarryForward>
+  - **An interrupt is a jump the program did not ask for.** A clock tap every few milliseconds hands control to the operating system.
+  - **A context switch is the illusion of simultaneity.** Save the registers, restore another's, jump back. One instruction at a time, hundreds of switches a second.
+  - **Address translation gives each program a private memory,** fences it from the others, and lets memory be larger than it is.
+  - **A system call is the only door through the fence.** One bit says who is in charge.
+  - **Files, drivers, and names** hide the hardware so a program need never know what it is talking to.
+</CarryForward>
+
+Next: machines that have never met, talking to each other across the world, in packets.

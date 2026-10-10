@@ -3,9 +3,69 @@ title: "The Internet"
 deck: "Chop a message into pieces, label each one, and let them find their own way."
 part: software
 order: 16
-stub: true
 ---
 
-The beacon chain and the relay return one more time, as routers passing packets. This chapter explains addresses, the idea of breaking a message into labelled pieces, how those pieces route around damage, and how a stack of agreements lets machines that have never met exchange a web page.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will let you break a link and watch packets find another route.
+## Two ways to connect
+
+The telegraph of Part I connected two offices with a wire. The telephone, which grew out of it, connected millions of people, and the way it did so is worth understanding because the internet was built by rejecting it.
+
+When you placed a telephone call in 1960, switches in a series of exchanges set up a continuous electrical path from your handset to the other person's, and that path was yours for the length of the call, whether you were talking or not. It is called circuit switching, and it has the virtues of a private road: once it is open, nothing gets in the way. It has the faults of a private road too. The path has to be set up before anything can be sent. It is wasted when nobody is speaking, which in a conversation is most of the time. And if any link on the path fails, the call is dead and has to be set up again from the start.
+
+In the early 1960s two people, Paul Baran in California and Donald Davies in England, working separately, proposed the other way. Do not set up a path. Chop the message into small pieces, put the destination address on every piece, and hand them to the network one at a time. Each piece travels on its own, from one switching machine to the next, and at each one the machine looks at the address and passes it along whichever link seems best at that moment. Pieces of the same message might take different routes. They might arrive out of order. If a link fails, the pieces simply go another way. Davies called the pieces packets, and the arrangement packet switching, and it is how every message you have ever sent across a network has travelled.
+
+## Each router decides alone
+
+A packet-switched network is a set of machines called routers joined by links, in no particular pattern. Each router keeps a table: for every destination it knows about, which of its own links is the best next step. When a packet arrives, the router reads the destination, looks it up, and sends the packet out of that link. That is all a router does. It does not know the whole route. It does not know where the packet has been. It makes one local decision and forgets the packet.
+
+You have seen this shape three times already. The beacon watcher knows only whether the next hill is lit. The relay knows only whether its coil is energised. The router knows only which link is best for this address. Small local rules, repeated, carry the message across the country, and nobody in the chain holds the whole picture. The difference here is that the chain is a web, with many paths, and the local rule includes a way of noticing when a path has gone and choosing another. Routers tell their neighbours what they can reach, and the neighbours tell theirs, and the tables fill themselves in and repair themselves when a link breaks, without anyone drawing the map.
+
+<TryIt title="Packets find a way" note="Send a message. Watch it split into packets that each take their own route and arrive in their own order. Then break a link and send it again.">
+  <packet-router></packet-router>
+</TryIt>
+
+The first such network to run was ARPANET, paid for by the United States Department of Defense and built by a small contractor, and its first message was sent on the evening of 29 October 1969 from a computer at UCLA to one at Stanford. The intention was to type LOGIN. The receiving machine crashed after the G. The first message carried across a packet network was, therefore, LO.
+
+## Being sure it arrived
+
+Packets get lost. A router's queue fills and it throws some away; a link flickers; a packet is garbled on the wire and discarded. The network itself makes no promises about delivery, and this was a deliberate choice: a network that promised delivery would have to be complicated everywhere, and a network that promised nothing could be simple everywhere and let the two machines at the ends handle the promising.
+
+Chapter 2 ended with a gap in the design of codes. A code gives you a way to say anything, but no way to know that what you said was heard. Telegraph operators closed the gap by repeating back. The internet closes it the same way, mechanically. The sender numbers each packet. The receiver, as packets arrive, sends back short notes saying which numbers it has. If the sender does not hear about a number within a reasonable time, it sends that packet again. The receiver uses the numbers to put the pieces back in order, and to notice when one is missing, and to throw away a duplicate if a packet was sent twice. Out of an unreliable network that loses and reorders things, the two ends build a reliable conversation, delivered whole and in order, and the program above them never sees a packet.
+
+Those rules were written down in 1974 by Vinton Cerf and Robert Kahn, and in a refined form they are called TCP. The rules for addressing and forwarding the individual packets are called IP. On the first day of 1983, every machine on ARPANET switched to them at once, and because the rules were public and belonged to no company, any network could adopt them and join. Networks joined to networks. That is what the word *internet* means, and by the end of the 1980s there were enough of them that it was simply the internet.
+
+## Envelopes inside envelopes
+
+The clean way to think about all this is as a stack of layers, each of which solves one problem and wraps what it is given in an envelope.
+
+At the top, a program has something to say: a request for a web page, say. It hands the text to the layer below, which breaks it into numbered pieces, puts each in an envelope marked with the piece's number and which program at the other end should get it, and handles the acknowledging and resending. That layer hands each envelope to the one below, which puts it inside a second envelope marked with the address of the destination machine; this is the envelope the routers read. That layer hands it to the lowest, which puts it inside a third envelope marked for the very next machine on the wire or the radio, and sends the bits.
+
+At each router, only the outer envelope is opened, the next machine chosen, and a fresh outer envelope put on. The second envelope is read for the address but not opened. The innermost is never touched until the destination. And at the destination, the layers unwrap in reverse, each reading only its own envelope, until the request arrives at the program it was meant for, whole, as if the two programs were talking directly.
+
+<TryIt title="Wrapping a request" note="Step a message down through the layers, watching an envelope added at each one. Then follow it across the network and see which machine opens what.">
+  <protocol-stack></protocol-stack>
+</TryIt>
+
+The reason to build it this way is the reason behind every layer in this book. Each layer is a promise about behaviour with its mechanism hidden. The web page does not know about packets. The packet layer does not know whether the bits are going over copper, glass fibre, or radio. The radio does not know it is carrying a web page. Replace any layer and the others keep working, which is why the same web page can reach a phone on a train and a computer under the sea.
+
+## Names, and then the web
+
+One more translation, and then a thing built on top.
+
+Machines are addressed by numbers, which people cannot remember. So there is a service, distributed across thousands of machines around the world, that turns names into numbers: ask it for a name and it answers with the address. It is a code book, in the Chappe sense, looked up automatically a billion times a second, and when it fails, which is rare, the internet appears to vanish even though every wire is intact.
+
+With addresses, reliable delivery, and names in place, the stage was set for someone to put something on it that ordinary people wanted. In 1989 Tim Berners-Lee, at a physics laboratory in Geneva, proposed a way of writing documents that could point to other documents on any machine, a simple request format for fetching them, and a program to display them. He called it the World Wide Web, and in 1991 it went public. It was not a network. It was a convention for using one, three layers above the packets, and it is the reason most people have ever heard of any of this.
+
+Part IV began with a machine that was expensive to instruct and ends with hundreds of millions of them talking to each other, each running programs written in languages far above the instruction set, kept apart by referees, exchanging packets they never see. Every layer rests on the ones below. None of it needed a new idea about what a switch is. It needed a very great many cheap switches and sixty years of agreeing on what the numbers mean.
+
+<CarryForward>
+  - **Packets, not paths.** Chop the message up, address every piece, let each find its own way.
+  - **Each router decides alone,** from a table that fills and repairs itself. Local rules, global reach, the beacon chain as a web.
+  - **Reliability is built at the ends.** Numbered pieces, acknowledgements, and resending turn a lossy network into a dependable one.
+  - **Layers are envelopes.** Each opened only by its peer. Replace any layer and the rest keep working.
+  - **Names map to numbers** through a distributed code book, and the web is a convention built on top of all of it.
+</CarryForward>
+
+Part V turns to a different pressure on the machine: drawing pictures, millions of dots at a time, and the strange kind of processor that grew up to do it.

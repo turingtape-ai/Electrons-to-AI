@@ -3,9 +3,58 @@ title: "Machine Code"
 deck: "An instruction is just a number the machine has agreed to treat as a command."
 part: software
 order: 13
-stub: true
 ---
 
-Chappe's towers sent numbers that pointed into a book. A processor reads numbers from memory and treats some as commands and some as data, according to an agreement baked into its wiring. This chapter makes that agreement concrete with a very small invented machine and a handful of instructions.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will be that machine, running programs you can edit.
+## The expensive part moves
+
+Part III ended with the switch becoming free. Something else became expensive in its place, and Part IV is about that.
+
+When a computer was a room full of relays, the machine was the cost and the people who told it what to do were a footnote. By the 1960s the position had reversed. A machine could do a million operations a second, and every one of those operations had to be chosen, in advance, by a person, and written down as a number. The limit on what computers could do stopped being how fast they ran and became how fast people could tell them what to run. Everything in the next four chapters is a response to that: ways of letting people say more with less, by making the machine do more of the translating.
+
+To see what needed translating, go back to the small machine from Chapter 8 and look at its instructions more closely.
+
+## Reading a number as a command
+
+Each row of that machine's memory held a number, and when the program counter pointed at a row, the machine read the number as an instruction: the upper part said what to do and the lower part said which row to do it to. That split, and the table that says which upper part means *add* and which means *jump*, is the machine's *instruction set*, and everything a programmer could ever make the machine do had to be spelled out in it.
+
+Real instruction sets are bigger, but not different in kind. Instead of one accumulator there are a handful of fast cells inside the processor called registers, and most instructions move numbers between registers, or combine two registers into a third, or move a number between a register and memory. There are compares, which set a flag, and jumps that look at the flag. There are instructions that are four bytes long, or two, or one, with the fields packed in different ways. But each instruction is still a number, the decoder still turns part of it into one live wire among many, and the live wire still opens gates between the right places.
+
+Here is the thing to notice about the instruction set, because it matters for sixty years of history. It is a *contract*. On one side are the people who build the chip; on the other, the people who write programs. The chip builders can change anything inside, swap tubes for transistors, add a second adder, rearrange the whole machine, so long as the same numbers still mean the same things. In 1964 IBM made this explicit, announcing a family of machines, from small and slow to huge and fast, that all read the same instructions, so that a program written for the cheapest would run unchanged on the dearest. The idea of an architecture that outlives any one chip comes from there. Today there are, for practical purposes, two such contracts in the world, one in nearly every laptop and one in nearly every phone, and chips are designed to honour them.
+
+<TryIt title="Eight bits, four books" note="Set the bits. Read the same pattern as an instruction, as a number, as a letter, and as a shade. Nothing in the bits says which it is.">
+  <instruction-decoder></instruction-decoder>
+</TryIt>
+
+## The same bits, different books
+
+Try the interactive above with the pattern 0100 1000. Read as an instruction in our small machine it is "store the accumulator in row 8." Read as a number it is 72. Read as a letter, in the code that nearly every computer has used for text since 1963, it is a capital H. Read as a shade of grey it is a little darker than the middle.
+
+Nothing about the pattern prefers any of these. The bits are the same bits. What decides is where they are and who is looking: if the program counter points at them, they are an instruction; if an add instruction points at them, they are a number; if the program sending them to a screen treats them as text, they are an H. You met this on the hills, when two shapes on a mast meant a phrase only because of a page in a book, and you met it again in Chapter 8. Here it has consequences that programmers deal with daily. A program can read its own instructions as numbers and change them. A mistake can send the counter into a block of text, and the machine will dutifully try to execute the letters. A picture is a long row of numbers, which is why a picture file can be opened as text and show up as nonsense. The computer never knows what a number is for. The programs do, and only because someone wrote down a book.
+
+The letter code deserves one more sentence, because it is the grandchild of something you have seen. Baudot used five marks for a letter and had to switch between two pages to fit numbers in. The 1963 code uses seven bits, which gives 128 patterns: enough for both cases of the alphabet, the digits, punctuation, and a few dozen control marks like "new line" and "ring the bell" that are left over from the days of teleprinters. It is a fixed-width code, machine-shaped, exactly in the Baudot tradition, and it is still underneath nearly every piece of text in the world.
+
+## Writing in numbers
+
+So the first programmers wrote in numbers. Literally: a row of switches on the front of the machine, one per bit, set by hand for each row of memory, then a button to store it and move to the next row. Or holes punched in paper tape, read in a few hundred rows a second. A program of a thousand instructions was a thousand numbers worked out by hand, each one looked up in the table, each address counted by hand, and if you added one instruction in the middle, every jump that pointed past it was now wrong by one and had to be found and fixed.
+
+The first convenience, and it was a great one, was to let the machine do that bookkeeping. Write *ADD* instead of 2, and let a program look it up. Write a name for a row instead of its number, and let the program count rows and fill the numbers in, and if you insert a line, let it recount. That program is called an assembler, and the language it reads, which is just the instruction set with names, is assembly language.
+
+It sounds like a small thing. It is the first time in the story that a program's job is to write other programs, and once that door is open, there is no reason to stop at one step. An assembler translates names into numbers. The next chapter's program translates formulas and loops into assembly. The chapter after that lets many such programs share one machine. Each is a translation, and each lets a person say more while writing less, and each is possible only because the machine underneath became cheap enough to spend on translating.
+
+<TryIt title="Names instead of numbers" note="Write a program for the small machine using names. The assembler counts the rows and fills in the numbers. Then run it.">
+  <assembler-view></assembler-view>
+</TryIt>
+
+Look at the listing the assembler produces, with the names on the left and the numbers on the right. The numbers are what the machine sees. The names are what you see. The whole of software is the business of building better names and more capable translators between the two, and the next chapter takes the biggest single step.
+
+<CarryForward>
+  - **The instruction set is a contract.** Builders may change anything inside the chip, so long as the same numbers mean the same things. Programs outlive machines because of it.
+  - **Bits mean what the reader makes of them.** Instruction, number, letter, shade: the pattern is the same; the book is different. The machine never knows which.
+  - **Text is a fixed-width code.** Seven bits per letter, straight from Baudot's tradition.
+  - **The assembler was the first program that writes programs.** Names for numbers, counted by the machine. Every layer above is another translator.
+</CarryForward>
+
+Next: a program that reads a formula and a loop, and writes the thousand instructions for you.
