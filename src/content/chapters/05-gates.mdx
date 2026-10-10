@@ -3,9 +3,69 @@ title: "Gates"
 deck: "Two switches in a row say AND. Two side by side say OR. A switch wired to open when it is pushed says NOT. That is enough."
 part: logic
 order: 5
-stub: true
 ---
 
-This chapter builds the three simplest decisions out of relays and shows that any rule you can write down as a table of yes-and-no answers can be built from them. The table of answers is the agreement-in-advance from Chapter 1, now written into wiring.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will let you wire gates together and flip their inputs.
+## Two keys and a lamp
+
+Forget relays for a moment and take two ordinary telegraph keys, a battery, and a lamp.
+
+Wire them in a line: battery, first key, second key, lamp, back to the battery. The lamp lights only when *both* keys are pressed, because the current has to get through both gaps. Release either and the loop is broken.
+
+Now wire them differently. From the battery the wire splits into two branches, one through each key, and the branches join again before the lamp. Press *either* key and there is a complete path. Press both and there are two. Only when neither is pressed does the lamp stay dark.
+
+Those are two different rules, and they come entirely from how the wire is routed. Nothing was added. The first arrangement answers the question "are both keys down?" The second answers "is at least one key down?" In English we would say *and* for the first and *or* for the second, and that is what they are called: an AND and an OR.
+
+The third rule needs the relay from the last chapter, built with its contact the other way round, touching when the coil is idle and pulled apart when it is energised. Its lamp is lit when its key is *not* pressed. A NOT.
+
+Now swap the keys for relays, so that each input is a current rather than a finger, and you have three devices whose inputs and outputs are the same kind of thing. That is the step that matters. A finger cannot press a key that presses another key. A current can energise a coil whose contact energises another coil. These three can be joined to each other, output to input, as many times as you like.
+
+<TryIt title="Three arrangements" note="Flip the inputs and watch the contacts and the lamp. The table on the right fills in as you try each combination.">
+  <relay-gates></relay-gates>
+</TryIt>
+
+## The table is the specification
+
+Look at the table beside the circuit. For each way the inputs can be set, it records what the lamp does. With two inputs there are four rows, because each input can be one of two things and two times two is four.
+
+That table is a complete description of the circuit's behaviour. If two circuits have the same table, then for every purpose that matters they are the same circuit, however differently they are wired inside. And if you can write down the table you want, you have fully specified what you want built. It is the agreement-in-advance from Chapter 1 again, now written as a grid: *when the inputs look like this, the output shall be that.*
+
+The table has a name, a truth table, and the name has a history worth two sentences. In 1854 an English schoolteacher named George Boole published an algebra for reasoning, in which statements were either true or false and could be combined with *and*, *or*, and *not* according to fixed rules. Eighty-three years later a graduate student at MIT, Claude Shannon, noticed that Boole's algebra described relay circuits exactly: true was a closed contact, false an open one, and Boole's rules were the rules for wiring. His 1937 thesis turned the design of switching circuits from a craft into arithmetic.
+
+## Drawing the behaviour, not the mechanism
+
+Coils and contacts are tiresome to draw, and they are beside the point. What we care about is the table, so engineers draw a shape that stands for the table and leave the relay out of the picture. A flat-backed shape with a round front for AND, a curved shape with a pointed front for OR, a triangle with a small circle on its nose for NOT. These shapes are called gates, because a signal either gets through or does not.
+
+This is the first time in the book that we have drawn a thing by what it *does* rather than what it *is*, and it is worth pausing on, because the whole rest of the story is built out of moments like it. The gate symbol does not say "relay." In Part III the relay inside it will be replaced by a glowing glass tube, then by a speck of silicon, and the symbol will not change, because the table will not change. Everything designed with the symbol will keep working. A good abstraction is a promise about behaviour that lets you forget the mechanism, and here is the first one.
+
+## Joining gates
+
+Because a gate's output is the same kind of thing as its input, gates can feed gates, and the combinations have tables of their own.
+
+Take a question neither AND nor OR can answer alone: "is exactly one of the two keys pressed?" Not neither, not both, just one. Call it *exclusive or*, XOR. You can build it from the three you have. Feed the two inputs to an OR, which is on when at least one is pressed. Feed them also to an AND, which is on only when both are. Run the AND's output through a NOT. Then AND the two results together: at least one, *and not* both. Four gates, and a new table.
+
+Here is a stronger claim, and then the recipe that proves it. *Any* truth table, for any number of inputs, can be built from AND, OR and NOT. Not most tables. All of them.
+
+The recipe: look at each row of the table where the output should be on. For that row, build an AND gate that is on only for exactly that pattern of inputs, feeding each input straight in if the row wants it on and through a NOT if the row wants it off. Now you have one AND gate per "on" row, each recognising its own row and nothing else. OR them all together. The result is on for precisely the rows you chose. It is not always the smallest circuit, but it is always a circuit, and it always works.
+
+<TryIt title="Any table you like" note="Tick the rows where you want the lamp on. The circuit that does exactly that is built underneath. Flip A and B to check it.">
+  <any-table></any-table>
+</TryIt>
+
+Read what that means slowly. Every yes-or-no rule that can be written down as a table can be turned into wiring, by a procedure, without cleverness. Deciding is a thing switches can do. In the next three chapters that one fact will give us arithmetic, memory, and a machine that follows instructions.
+
+## What a gate costs
+
+One last thing, because it will matter enormously later. A relay does not switch instantly. The armature has to move, and that takes a few thousandths of a second. When the output of one gate feeds the next, the delays add up. A chain of ten gates settles ten times more slowly than one. So there are two measures of any circuit: how many gates it has, which is cost, and how many gates lie on the longest path from an input to the output, which is time. Part III is, among other things, the story of making that second number shrink from thousandths of a second to billionths.
+
+<CarryForward>
+  - **AND, OR, NOT are wiring.** Series, parallel, and a contact built the other way round. Nothing is added except arrangement.
+  - **The truth table is the specification.** Same table, same circuit, whatever is inside. Writing the table *is* saying what you want.
+  - **Symbols hide mechanisms.** A gate is drawn by its behaviour. The relay inside can be swapped for anything with the same table.
+  - **Any table can be built.** One AND per "on" row, OR them together. Deciding is something switches can do.
+  - **Gates take time.** Depth is delay. Keep an eye on the longest path.
+</CarryForward>
+
+Next, we use the gates to do the first thing anyone wanted a machine for: adding up.

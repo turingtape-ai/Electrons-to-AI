@@ -3,9 +3,75 @@ title: "A Mechanical Computer"
 deck: "Put adders, memory, and a way to choose the next step together, and you have a machine that follows instructions."
 part: logic
 order: 8
-stub: true
 ---
 
-With arithmetic and memory in hand, the remaining piece is a mechanism that reads an instruction, does what it says, and moves to the next one. This chapter tells that story through Charles Babbage's never-finished engines and the relay machines of the 1930s and 40s, and introduces the loop at the heart of every computer since: fetch, decode, do, repeat.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will let you step through a short list of instructions and watch the machine's state change.
+## What a clerk does
+
+Before it meant a machine, the word *computer* meant a person. Rooms of them, mostly women in the later years, sat at desks working through long tables of calculations by hand: positions of the moon for navigators, logarithms for engineers, interest for banks. Each computer followed a written procedure. Take the number in column three. Add it to the number in column four. Write the result in column five. Move to the next row. Repeat until the page is full.
+
+Look at what the clerk is doing and notice how little of it is thinking. There is a list of steps. There is a sheet of numbers. There is a finger that marks which step comes next. The clerk reads the step, does it to the sheet, moves the finger down, and reads the next one. Occasionally a step says *if the result is zero, go to step twelve*, and the finger jumps.
+
+That finger is the missing piece. We have gates to do each step, an adder to do the arithmetic, and memory to hold the sheet. What we do not yet have is anything that reads a step, does it, and moves to the next one by itself.
+
+## Babbage's engines
+
+Charles Babbage was a mathematician in London in the 1820s, and he was angry about tables. The printed tables everyone relied on were full of errors, because they were computed by tired clerks and set in type by tired printers. He designed a machine to compute them mechanically, with brass gears carrying digits and a crank to turn, and he called it the Difference Engine. It was never finished in his lifetime, mostly for want of money and the patience of the machinists, but the parts that were built worked.
+
+Then, in the 1830s, he designed something far stranger, and this is the one that matters to us. He called it the Analytical Engine. It had a part he called the *mill*, which did arithmetic, and a part he called the *store*, which held numbers in columns of wheels, a thousand numbers of fifty digits each. Mill and store: an adder and a memory, in brass.
+
+And it had a way of being told what to do. Babbage borrowed it from the silk weavers of Lyon, who since 1804 had been controlling the patterns on their looms with chains of stiff cards punched with holes. A hook that found a hole lifted its thread; a hook that met card did not. Change the cards, and the same loom weaves a different cloth. Babbage's engine would read cards in the same way, and each card would say: take the number from this column of the store, add it to that one, put the result there. A chain of cards was a procedure. The machine was the clerk.
+
+It also had the finger that jumps. Babbage designed the card reader so that the engine could, depending on a result, skip forward or backward along the chain of cards. With that, the machine could repeat a group of steps and could choose between paths. In 1843 Ada Lovelace published a set of notes on the engine that included a worked procedure for it, a sequence of operations to compute a particular series of numbers, with a loop in it. Nothing like it had been written before.
+
+The Analytical Engine was never built. The idea, a store, a mill, a chain of instructions, and a way to jump, sat on paper for a hundred years.
+
+## Relays catch up
+
+What revived it was not a better idea but a better switch. By the late 1930s relays were cheap, reliable, and made by the million for telephone exchanges, and several people in different countries noticed, more or less independently, that a few thousand of them would do everything Babbage's gears were meant to do.
+
+In Berlin, Konrad Zuse built a machine in his parents' living room and finished the third version, the Z3, in 1941. It used about 2,600 relays, held its numbers in binary, and read its instructions from holes punched in discarded cinema film. At Harvard, a machine designed by Howard Aiken and built by IBM, the Mark I, started work in 1944: fifteen metres long, a program on paper tape, a sound like a room full of knitting. At Bell Labs, George Stibitz built a series of relay calculators, one of which was operated by teletype from a conference two hundred miles away, which made it the first computer to be used remotely.
+
+These machines were slow, by the standards of what came even a few years later. A relay takes a few thousandths of a second to switch, and a multiplication might take several seconds. But they ran unattended for hours, following their tapes, and they were right. The clerk had been replaced.
+
+## The loop at the heart of it
+
+Strip any of these machines down and the same cycle is turning inside.
+
+There is a memory, rows of bits with addresses, holding numbers. There is a small register called the program counter, which holds an address: the finger on the list of steps. And there is a repeating cycle with three beats.
+
+**Fetch.** Read the row of memory at the address in the program counter. Treat what you find there as an instruction.
+
+**Decode.** An instruction is just a number. Some of its bits say *what* to do, and the rest say *which row* to do it to. A decoder, the circuit from the last chapter, turns the "what" bits into one live wire among several: this is an add, this is a store, this is a jump.
+
+**Execute.** The live wire opens the right gates. Numbers move from memory into the adder and back. Then the program counter goes up by one, so the next fetch reads the next row, unless the instruction was a jump, in which case the program counter is simply replaced with the address the instruction named. A conditional jump looks at a result first, and replaces the counter only if the result is zero.
+
+Fetch, decode, execute, advance. That is the whole machine. Everything built in the eighty years since has been this cycle, running faster, with more memory and more elaborate instructions, often many cycles turning side by side. But nothing has replaced the cycle.
+
+Notice what the instructions are. They are numbers in memory, in rows exactly like the numbers they operate on. Babbage kept instructions on cards and numbers in the store, and the relay machines kept them on tape, but there is no law that says they must be separate, and in 1945 it was proposed that they should not be. If instructions live in memory, a program can be loaded as easily as data, and, more unsettlingly, a program can compute new instructions and store them to be executed. That proposal, the stored program, is the one the first electronic machines followed, and the toy machine below follows it too.
+
+<TryIt title="A very small machine" note="Pick a program and step through it. Watch the counter, the accumulator, and the three beats of each cycle. You can edit any cell of memory and run your own.">
+  <tiny-machine></tiny-machine>
+</TryIt>
+
+## Reading the machine
+
+Spend a few minutes with the machine above, because it is the last time in the book that you will be able to see all of a computer at once.
+
+Memory has sixteen rows. Each holds a number from 0 to 127. The machine has a single working register, the accumulator, where arithmetic happens, and a program counter. The instruction in each row is read as two parts: the number divided by sixteen gives the operation, and the remainder gives the address it applies to. So 34 is 2 × 16 + 2: operation 2, which is "add," applied to row 2. The machine does not know that. Its decoder has a wire for the number 2 and that wire opens the gates between row 2 and the adder. The meaning of "2 means add" lives in the wiring, and in the little table printed beside the machine, and nowhere else.
+
+That ought to sound familiar. The instruction is a number pointing into a book. The book is the design of the decoder. The machine copies and moves patterns, and the patterns mean *add* and *jump* only because someone decided they would, exactly as Chappe's two shapes meant a phrase because someone wrote it on page 41, line 7. Fifty chapters of brass and copper separate those two ideas, and they are the same idea.
+
+Try the countdown program. Watch the accumulator fall by one each time round, and watch the conditional jump at the end of the loop: it does nothing until the accumulator reaches zero, and then it changes where the finger points, and the machine halts. That single instruction, *jump if zero*, is what makes the machine more than a calculator. It is the point where a result feeds back into which step comes next, memory deciding behaviour. Everything that looks like judgment in a computer, right up to the models at the end of this book, comes down to numbers steering which instructions run.
+
+<CarryForward>
+  - **Store, mill, instructions, and a way to jump.** Babbage's four parts are every computer's four parts.
+  - **Fetch, decode, execute, advance.** A counter points at a row of memory, the row is read as an instruction, the instruction is done, the counter moves. Nothing has replaced this loop.
+  - **An instruction is a number.** Its meaning is fixed by the decoder's wiring, the way a Chappe signal's meaning was fixed by the code book.
+  - **A conditional jump is where results steer the future.** Loops and choices come from that one instruction.
+  - **A program can live in memory beside its data.** Which means programs can be loaded, copied, and written by other programs.
+</CarryForward>
+
+Part II has built a complete computer out of relays. Part III asks the only question left: how to make the switch faster, smaller, and cheaper, a million times over.

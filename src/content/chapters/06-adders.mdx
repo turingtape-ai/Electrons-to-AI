@@ -3,9 +3,76 @@ title: "Adders"
 deck: "Counting with two fingers, and a machine that carries the one."
 part: logic
 order: 6
-stub: true
 ---
 
-Numbers written with only two digits, so that a row of lit-or-dark lamps can hold one. Then a small arrangement of gates that adds two single digits and remembers the carry, and a row of those arrangements that adds numbers of any size, with the carry rippling along like a signal down a chain.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will be an adder you can feed two numbers into, watching each carry happen.
+## Counting with two fingers
+
+We write numbers with ten different marks because we have ten fingers. A lamp has two states. If we want a row of lamps to hold a number, we need a way of writing numbers with two marks, and it turns out the way we already write them carries over almost untouched.
+
+In an ordinary number like 352, each position is worth ten times the one to its right: two ones, five tens, three hundreds. The marks run from 0 to 9 and when a position would need a 10 it goes back to 0 and the position to its left goes up by one. That is all a number is: a row of positions, each worth a fixed multiple of its neighbour.
+
+Now do the same with positions worth *two* times the one to the right instead of ten. The rightmost lamp is worth 1. The next is worth 2, then 4, 8, 16, 32, 64, 128. Each lamp doubles, which you may remember from the hillside with two baskets, and then three. A lamp that is lit contributes its worth; a dark lamp contributes nothing. Thirteen is 8 + 4 + 1, so thirteen is *lit, lit, dark, lit* reading from the 8 down to the 1, or 1101 if we write lit as 1 and dark as 0.
+
+Eight lamps can show any number from 0 to 255. Twenty would show over a million. This is binary, and each lamp, each position that is either 1 or 0, is a binary digit. In 1947 a statistician looking for a shorter name squeezed the two words together and got *bit*. We promised the word in Chapter 1, and here it is, now meaning both a yes-or-no choice and a digit in a number, which are the same thing.
+
+<TryIt title="Eight lamps" note="Click lamps to light them, or count up and watch the carries ripple leftward.">
+  <binary-lamps></binary-lamps>
+</TryIt>
+
+## Adding one column
+
+Adding two binary numbers works exactly like the addition you learned, column by column from the right, carrying when a column overflows. The difference is that a binary column overflows almost immediately.
+
+There are only four things that can happen in a single column. Zero plus zero is zero. Zero plus one is one. One plus zero is one. And one plus one is *two*, which binary has no mark for, so it is written as 0 with a 1 carried to the next column, exactly as 7 + 5 in decimal is written 2 carry 1.
+
+Write that as a table, and you have a truth table with two inputs and two outputs:
+
+| A | B | Sum | Carry |
+|---|---|-----|-------|
+| 0 | 0 | 0 | 0 |
+| 0 | 1 | 1 | 0 |
+| 1 | 0 | 1 | 0 |
+| 1 | 1 | 0 | 1 |
+
+Look at the Sum column. It is on when exactly one input is on. That is the XOR we built in the last chapter. Look at the Carry column. It is on only when both inputs are on. That is an AND. So one column of binary addition is an XOR gate and an AND gate side by side, sharing the same two inputs. This little circuit is called a half adder, and the reason it is only half of one is that it ignores something.
+
+## The carry coming in
+
+In every column except the first, there may be a carry *arriving* from the column to the right. So a real column has three inputs, A, B and the carry in, and still two outputs, the sum and the carry out. The sum is 1 when an odd number of the three inputs are 1. The carry out is 1 when at least two of them are.
+
+You could build this straight from the recipe in Chapter 5: write the eight-row table, one AND per "on" row, OR them up. Or you can be economical and notice that two half adders will do it. The first adds A and B. The second adds that result to the carry in. If either half adder produced a carry, the column produces a carry, so the two small carries are joined with an OR. Five gates in all, and the thing is called a full adder.
+
+Now line up full adders, one per column, and run each one's carry out into the next one's carry in. Set the two numbers on the inputs, and the sums appear on the outputs. That is an adder: a row of identical cells, each handling one column, passing the carry along. Four cells add numbers up to fifteen; thirty-two cells add numbers into the billions. The cells do not change. You just use more of them.
+
+<TryIt title="Four columns" note="Set the two numbers with the lamps. Then step the carry and watch it travel from column to column.">
+  <ripple-adder></ripple-adder>
+</TryIt>
+
+## Watching the carry travel
+
+Step the carry in the interactive and look at what happens. The rightmost column settles first. Its carry goes to the next column, which can only settle once that carry has arrived, and so on down the row. The carry *ripples*, and the leftmost sum is not trustworthy until the ripple has reached it.
+
+You have seen this before. It is the beacon chain. Each column is a watcher who can only act once the neighbour to the right has acted. And it has the beacon chain's weakness: the time for the whole thing to settle is the time for one cell multiplied by the number of cells. A thirty-two column adder built this way takes thirty-two gate delays in the worst case, when a carry started at the right has to travel all the way to the left, as it does when you add 1 to a number that is all ones.
+
+Engineers have spent a great deal of ingenuity on that. There are arrangements that look ahead and work out in advance whether a carry *will* arrive, trading many more gates for far fewer gate delays. That trade, more hardware for less waiting, is one you will see made again and again. For now, the ripple adder is the honest version, and it works.
+
+## Taking away, and the rest
+
+Subtraction needs no new machine, only a trick. On a twelve-hour clock, going back three hours lands you in the same place as going forward nine, because the face wraps around. Binary numbers held in a fixed number of lamps wrap around too: add 1 to eight lamps showing 255 and they show 0. So to subtract a number, you can add the number that is "the rest of the way round." That number is easy to make: flip every bit of the one you want to subtract and add 1. The same adder, with a row of NOT gates in front of one input, now subtracts. Negative numbers are stored the same way, as the rest of the way round, and the adder never knows the difference.
+
+Multiplication is repeated addition, with each repeat shifted one column to the left, which is how you learned to do it on paper. Division is repeated subtraction. Comparison is subtraction with the answer thrown away and only the sign kept. With an adder and some patience, you have arithmetic.
+
+But patience is the point. Repeated addition means doing a thing many times in sequence, and so far nothing in our collection can do anything *in sequence*. The adder answers instantly and forgets instantly. Set new inputs and the old result is gone. To repeat, the machine needs to hold on to a result while it works on the next step. It needs to remember.
+
+<CarryForward>
+  - **Two marks are enough for any number.** Positions that double instead of tenfold. A bit is a binary digit and a yes-or-no, which are the same thing.
+  - **One column is two gates.** Sum is XOR, carry is AND. A full adder also takes the carry coming in.
+  - **Adders are rows of identical cells.** More columns, same cell. The carry rippling along is the beacon chain again, and so is its delay.
+  - **Subtraction is addition round the clock.** Flip the bits, add one, use the same adder.
+  - **Arithmetic is wiring.** But repeating it needs something that holds a result: memory.
+</CarryForward>
+
+Next: a circuit that feeds its own output back into its input, and so keeps a bit after you let go.

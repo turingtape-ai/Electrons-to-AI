@@ -3,9 +3,68 @@ title: "Memory"
 deck: "A circuit that feeds its own output back into its input will hold a state after you stop pushing."
 part: logic
 order: 7
-stub: true
 ---
 
-Everything so far forgets the moment the input changes. This chapter introduces a loop: two gates that each listen to the other, so that once set they stay set. One bit, remembered. Then rows of them, and a way of naming each row so a machine can ask for the one it wants.
+import TryIt from '../../components/TryIt.astro';
+import CarryForward from '../../components/CarryForward.astro';
 
-The interactive will let you set and reset a single latch, then store and read back a short row of bits.
+## Everything so far forgets
+
+Every circuit in the last two chapters has the same character. Set the inputs, and the output appears. Change the inputs, and the output changes with them. Let go, and nothing is left. The AND gate has no idea what its inputs were a moment ago. The adder does not keep its sum. These circuits are like a mirror: they show you what is in front of them, and only that.
+
+A mirror cannot count, because counting means holding the last number while you add one to it. A mirror cannot follow instructions, because following instructions means knowing which step you are on. Before a machine can do anything that takes more than one step, it needs a circuit that *stays*.
+
+The trick that makes a circuit stay is almost embarrassingly small. Let the circuit's output be one of its own inputs.
+
+## A relay that holds itself
+
+Take one relay and one lamp. Wire a push button so that pressing it energises the coil, pulling in the armature and closing the contact, and let the contact light the lamp. So far this is Chapter 4: press and the lamp is on, release and it is off.
+
+Now add one wire. Run a second path from the battery, through the relay's own contact, back into its own coil. Press the button. The coil pulls in, the contact closes, and the contact now feeds the coil. Release the button. The coil is still energised, through its own contact. The armature stays down. The lamp stays on. The relay is holding itself in, and it will go on holding itself in until something breaks the loop.
+
+To let go, put a second button in that holding path, one that is normally closed and opens when pressed. Press it and the loop breaks, the coil lets go, the contact opens, and now the holding path is open even after you release the second button. The lamp stays off.
+
+Two buttons, one relay, one extra wire, and the circuit has a past. Press Set and it remembers that you did. Press Reset and it remembers that instead. It is called a latch, and it holds exactly one bit.
+
+<TryIt title="A circuit with a past" note="Press Set and release. Then Reset and release. Switch to the gate view to see the same loop drawn with symbols.">
+  <sr-latch></sr-latch>
+</TryIt>
+
+In gate symbols the same thing is two gates, each with its output wired to one of the other's inputs. Each gate is holding the other up, like two cards leaning together. Push on one side and they both tip the other way and stay there. The relay drawing and the gate drawing are the same circuit, and the thing that makes it memory in both is the loop: output feeding input.
+
+That is the whole secret of memory. There is no special substance that remembers. There is only a circuit arranged so that its present state keeps itself going. The bit is not stored anywhere in particular. It is stored in the fact that the loop is currently running one way rather than the other.
+
+## Rows of bits
+
+One latch holds one bit. Line up eight and you can hold a number from 0 to 255, the same eight lamps as in the last chapter, except that now they stay lit by themselves. Eight bits held together like this is a byte, and for the rest of the book that will be our unit of memory, the way a word is the unit of a sentence. (Baudot used five, and for a while machines used six, seven, nine. Eight won, for reasons that were half engineering and half accident, and we are stuck with it.)
+
+Add a few gates in front of the row so that a single "store" signal copies whatever is on the input lamps into all eight latches at once, and you have a register: a place to put a number down so that you can pick it up again later. The adder's result goes into a register. The next step takes it back out. Now the machine can repeat.
+
+## Choosing a row
+
+One register is not enough. A machine needs to put down many numbers and pick each one back up by name. So stack the rows. Row 0, row 1, row 2, up to as many as you can afford. Each row is a byte. The row's number is its *address*.
+
+To read row 5 you need a way to turn the number 5 into "connect row 5's latches to the output wires and nothing else's." That is a truth table with the address as its inputs, and you know how to build any truth table. For each row, one AND gate that recognises exactly that address, with NOT gates on the bits that should be zero. Address 5 is 101, so row 5's gate is A2 AND (NOT A1) AND A0. Feed the address in, and exactly one of those gates comes on. That circuit is called a decoder, and it is nothing but the recipe from Chapter 5 put to work. It picks one row out of many.
+
+Writing is the same in reverse. Put the new byte on the input lamps, set the address, and let the decoder's one live line, combined with the "store" signal, open the gates into that row's latches and no others.
+
+So a memory is: many rows of latches, a decoder that turns an address into one live row, and a handful of gates that steer bits in or out of the live row. Give it an address and it hands you the byte stored there. Give it an address and a byte and it keeps the byte for you. That is all a memory does, and it is all it has ever done, from the relay racks of the 1940s to the chips in a phone.
+
+<TryIt title="Four rows" note="Set an address and a value, then write. Change the address and see which row the decoder lights. Read back what you stored.">
+  <memory-bank></memory-bank>
+</TryIt>
+
+## The expensive part
+
+Relays are big, and a byte of memory needs eight of them plus the steering gates. A machine with a few hundred bytes of relay memory filled a wall. For most of the history of computing, memory was the scarce and costly part, far more than arithmetic, and a great many strange and ingenious devices were tried to hold bits more cheaply: tubes of mercury carrying sound pulses that were caught at the far end and sent round again, spinning drums coated with magnetic paint, tiny rings of iron threaded on wires. All of them were ways of making a loop that keeps going, which is the one thing memory needs. We will meet the ones that matter in Part III.
+
+What we have now, though, is complete in the way that matters. Gates decide. Adders calculate. Latches remember. A decoder picks a row by number. The one thing missing is a mechanism to use these pieces in order: fetch a number, add it, put the result away, and do that again with the next number, without a person pressing the buttons.
+
+<CarryForward>
+  - **Feedback is memory.** Output wired to input makes a circuit that keeps its own state. Nothing special stores the bit; the loop does.
+  - **A latch is one bit; a register is a row of them.** Store a number, pick it up later. This is what lets a machine repeat.
+  - **An address names a row.** The decoder that picks it out is just a truth table built from gates, one AND per row.
+  - **Memory was the costly part.** For decades the race was to find cheaper loops that keep going.
+</CarryForward>
+
+Next: a machine that reads its own instructions from that memory, one after another, and does what they say.

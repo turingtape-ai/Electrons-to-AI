@@ -380,6 +380,31 @@ h1, h2, h3, h4 {
   color: var(--muted);
 }
 
+/* Tables in prose */
+.prose table {
+  border-collapse: collapse;
+  margin: 1.4em auto 0;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.prose th,
+.prose td {
+  padding: 7px 18px;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+}
+.prose th {
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.prose td {
+  color: var(--heading);
+}
+
 /* "Try it" panel */
 .tryit {
   margin: 2.6em 0;
